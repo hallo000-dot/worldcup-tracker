@@ -59,32 +59,80 @@
             </div>
 
             <!-- 階段 B：淘汰賽專屬大樹狀面板 (隱藏或激活) -->
-            <div id="panel-knockout-stage" class="space-y-6 hidden">
-                <div>
-                    <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
-                    <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">The group stage has filtered out. Tracking the final 32 nations advancing through the brackets.</p>
+            <!-- 階段 B：淘汰賽專屬大樹狀面板 (與 image_e71053.jpg 相同的對稱收斂設計) -->
+            <div id="panel-knockout-stage" class="space-y-6 hidden bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
+                        <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">Tracking the final brackets from the Round of 32 down to the World Cup Champion.</p>
+                    </div>
+                    <div class="mt-2 sm:mt-0 font-mono text-[10px] bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md text-slate-400">
+                        <i class="fa-solid fa-circle-info text-amber-500 mr-1.5"></i> Flow reads from outer wings inward
+                    </div>
                 </div>
                 
-                <!-- 橫向響應式樹狀結構圖 -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                        <div id="lbl-stage-r32" class="text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 32 Feeds</div>
-                        <div id="tree-r32-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
-                    </div>
-                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                        <div id="lbl-stage-r16" class="text-[10px] font-black text-indigo-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 16 Bracket</div>
-                        <div id="tree-r16-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                            <div id="lbl-tree-qf-ko" class="text-[10px] font-black text-amber-500 uppercase tracking-wider border-b border-slate-700 pb-1">Quarter-Final Matrix</div>
-                            <div id="tree-qf-list-ko" class="space-y-2"></div>
-                        </div>
-                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                            <div id="lbl-tree-sf-ko" class="text-[10px] font-black text-pink-400 uppercase tracking-wider border-b border-slate-700 pb-1">Semi-Final Matrix</div>
-                            <div id="tree-sf-list-ko" class="space-y-2"></div>
+                <!-- 🌳 對稱式淘汰賽樹狀網格系統 -->
+                <div class="grid grid-cols-1 xl:grid-cols-5 gap-4 items-center overflow-x-auto min-w-[800px] py-4 px-2">
+                    
+                    <!-- 列 1: 左翼外側 (32強/16強左半部對陣) -->
+                    <div class="space-y-6">
+                        <div class="text-center font-black tracking-wider text-[10px] text-slate-400 uppercase border-b border-slate-800 pb-1">Left Wing Brackets</div>
+                        <div id="tree-left-wing-list" class="space-y-3">
+                            <!-- 由 JS 動態渲染左半球對陣數據球隊 -->
                         </div>
                     </div>
+
+                    <!-- 列 2: 左翼內側 (半準決賽 / Quarter-Finals Left) -->
+                    <div class="space-y-12">
+                        <div class="text-center font-black tracking-wider text-[10px] text-amber-400 uppercase border-b border-slate-800 pb-1">Quarter-Finals</div>
+                        <div id="tree-qf-left" class="space-y-8">
+                            <!-- 左區半準決賽進度盒子 -->
+                        </div>
+                    </div>
+
+                    <!-- 列 3: 核心中央圈 (準決賽 / 總決賽 / 冠軍座席位) -->
+                    <div class="flex flex-col justify-between h-full space-y-8 bg-slate-900/40 p-4 rounded-xl border border-slate-800/60 shadow-inner">
+                        <div class="text-center font-black tracking-wider text-[11px] text-yellow-400 uppercase border-b border-slate-800 pb-1.5 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-trophy text-xs animate-bounce"></i> Center Stage Final
+                        </div>
+                        
+                        <!-- 準決賽核心線 -->
+                        <div id="tree-sf-center-feed" class="space-y-4 text-xs">
+                            <!-- 存放 Match 101 與 Match 102 的對峙狀態 -->
+                        </div>
+
+                        <!-- 冠軍終端對決核心盒 (完全比照 image_e71053.jpg 中央之冠) -->
+                        <div class="bg-gradient-to-b from-amber-950/40 to-slate-950 p-4 rounded-xl border border-amber-500/40 text-center shadow-xl space-y-3">
+                            <div class="text-[9px] uppercase font-mono tracking-widest text-amber-400 font-black"><i class="fa-solid fa-crown mr-1"></i> Predicted Champion <i class="fa-solid fa-crown ml-1"></i></div>
+                            <div id="bracket-champion-box" class="text-base font-black text-white tracking-wide bg-slate-900 py-2.5 px-2 rounded border border-slate-800 uppercase shadow-md animate-pulse">
+                                TBD
+                            </div>
+                            <div class="text-[9px] text-slate-500 font-mono" id="tree-final-date-loc">July 19 • New York</div>
+                        </div>
+
+                        <!-- 季軍與殿軍附加席位 (右側小裝飾盒) -->
+                        <div class="bg-slate-950/80 p-2 rounded border border-slate-800 text-[10px] text-center space-y-1">
+                            <div class="text-slate-500 font-bold uppercase tracking-wider text-[8px]">Consolation Stage</div>
+                            <div class="text-slate-300 font-medium">3rd Place: <span id="lbl-3rd-place" class="font-bold text-slate-100">TBD</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 列 4: 右翼內側 (半準決賽 / Quarter-Finals Right) -->
+                    <div class="space-y-12">
+                        <div class="text-center font-black tracking-wider text-[10px] text-amber-400 uppercase border-b border-slate-800 pb-1">Quarter-Finals</div>
+                        <div id="tree-qf-right" class="space-y-8">
+                            <!-- 右區半準決賽進度盒子 -->
+                        </div>
+                    </div>
+
+                    <!-- 列 5: 右翼外側 (32強/16強右半部對陣) -->
+                    <div class="space-y-6">
+                        <div class="text-center font-black tracking-wider text-[10px] text-slate-400 uppercase border-b border-slate-800 pb-1">Right Wing Brackets</div>
+                        <div id="tree-right-wing-list" class="space-y-3">
+                            <!-- 由 JS 動態渲染右半球對陣數據球隊 -->
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
