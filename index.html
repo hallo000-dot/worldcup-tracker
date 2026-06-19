@@ -201,6 +201,9 @@
         // =========================================================================
         // PRODUCTION LIVE API FETCH PIPELINE (With Chronological Sorting Optimization)
         // =========================================================================
+        // =========================================================================
+        // PRODUCTION LIVE API FETCH PIPELINE (Fixed Local Timezone & Sorting)
+        // =========================================================================
         async function fetchLiveTournamentData() {
             const syncStatusEl = document.getElementById("sync-status");
             if (syncStatusEl) {
@@ -208,21 +211,18 @@
             }
             
             try {
-                // Point directly to your active, live master production server
                 const response = await fetch('https://worldcup-tracker-seven.vercel.app/api/matches');
                 if (!response.ok) throw new Error("Backend pipeline returned an error status.");
                 
                 const rawJson = await response.json();
                 
-                // If Vercel intercepted an API key/tier block, route cleanly to backup simulation
                 if (rawJson.isError || !rawJson.matches) {
                     throw new Error(rawJson.serverMessage || "Invalid football-data payload structure.");
                 }
                 
-                // CRITICAL STEP: Sort all matches chronologically by their exact UTC timestamps first
+                // 1. CRITICAL STEP: Chronological sort by absolute time stamp first
                 rawJson.matches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
                 
-                // Clear internal temporary tracking storage prior to populating sorted feeds
                 apiDataStorage = {};
                 
                 rawJson.matches.forEach(match => {
@@ -244,8 +244,16 @@
                         computedScore = `${match.score.fullTime.home} - ${match.score.fullTime.away}`;
                     }
 
+                    // 2. FIXED TIMEZONE CONVERSION: Convert UTC to Local Date String safely
                     const matchUtcDate = new Date(match.utcDate);
-                    const localDateKeyStr = matchUtcDate.toISOString().split("T")[0];
+                    
+                    // Creates an accurate 'YYYY-MM-DD' key based on the viewer's local clock context
+                    const localYear = matchUtcDate.getFullYear();
+                    const localMonth = String(matchUtcDate.getMonth() + 1).padStart(2, '0');
+                    const localDay = String(matchUtcDate.getDate()).padStart(2, '0');
+                    const localDateKeyStr = `${localYear}-${localMonth}-${localDay}`;
+
+                    // Standard readable display format string
                     const localizedDisplayTime = matchUtcDate.toLocaleString(undefined, {
                         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', weekday: 'short', hour12: false
                     });
@@ -259,7 +267,7 @@
                         away: match.awayTeam.name,
                         score: computedScore,
                         status: match.status === "FINISHED" ? "FT" : match.status,
-                        time: localDateKeyStr,
+                        time: localDateKeyStr, // Correct local date index key mapping
                         displayTime: computedScore === "vs" ? localizedDisplayTime : `${localizedDisplayTime} • ${match.status === "FINISHED" ? "Final" : "Live"}`,
                         betDistribution: { home: homeWeight, draw: drawWeight, away: 100 - (homeWeight + drawWeight) },
                         stageName: "Group Stage"
