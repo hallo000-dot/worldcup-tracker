@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     
     // 2. Make the server-to-server call (No CORS blocking here!)
     const response = await fetch(targetUrl, {
-      headers: { 'X-Auth-Token': 'YOUR_REAL_API_KEY_HERE' }
+      headers: { 'X-Auth-Token': '82e229ce677b4eed85f13e901243c232' }
     });
 
     if (!response.ok) {
