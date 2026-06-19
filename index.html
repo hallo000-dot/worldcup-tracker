@@ -199,32 +199,25 @@
         }
 
         // =========================================================================
-        // FIXED: Now utilizing corsproxy.io wrapper to support X-Auth-Token headers
-        // =========================================================================
-        // =========================================================================
         // PRODUCTION LIVE API FETCH PIPELINE (Bypasses CORS restrictions completely)
         // =========================================================================
-        async function fetchLiveTournamentData() {
+       async function fetchLiveTournamentData() {
             const syncStatusEl = document.getElementById("sync-status");
             if (syncStatusEl) {
                 syncStatusEl.innerHTML = `<i class="fa-solid fa-arrows-spin animate-spin mr-1"></i> Syncing...`;
             }
             
             try {
-                // 1. Target Endpoint
+                // 1. Target Endpoint URL
                 const targetUrl = 'https://api.football-data.org/v4/competitions/WC/matches';
                 
-                // 2. We request via AllOrigins script/jsonp string pipeline to completely bypass header preflight blockers
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
-                if (!response.ok) throw new Error("Proxy transport layer down.");
+                // 2. Route through ThingProxy which cleanly forwards custom authorization headers safely
+                const response = await fetch('https://thingproxy.freeboard.io/fetch/' + targetUrl, {
+                    headers: { 'X-Auth-Token': '82e229ce677b4eed85f13e901243c232' }
+                });
+                if (!response.ok) throw new Error("API Limit reached or proxy transport rejected connection.");
                 
-                const wrapperJson = await response.json();
-                
-                // 3. Extract the underlying text payload string and parse it into real object notation
-                if (!wrapperJson.contents) throw new Error("Empty response content.");
-                const rawJson = JSON.parse(wrapperJson.contents);
-                
-                if (!rawJson.matches) throw new Error("Invalid football-data structure.");
+                const rawJson = await response.json();
                 
                 // Reset internal storage prior to populating live feeds
                 apiDataStorage = {};
