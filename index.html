@@ -32,7 +32,7 @@
         </div>
     </header>
 
-    <!-- 🎛️ NEW: Global Tournament Phase Navigation System -->
+    <!-- 🎛️ Global Tournament Phase Navigation System -->
     <div class="bg-slate-950/40 border-b border-slate-800/80 sticky top-16 z-30 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 py-2">
             <button id="tab-group" onclick="switchTournamentPhase('group')" class="px-4 py-2 text-xs font-black rounded-lg border bg-amber-500/10 border-amber-500/30 text-amber-400 cursor-pointer shadow-sm transition-all">
@@ -58,7 +58,7 @@
                 <div id="groups-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- 階段 B：淘汰賽專屬大樹狀面板 (隱藏或激活) -->
+            <!-- 階段 B：淘汰賽專屬大樹狀面板 -->
             <div id="panel-knockout-stage" class="space-y-6 hidden">
                 <div>
                     <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
@@ -92,15 +92,6 @@
         <!-- 右側：直播與排程指南面板 (跨階段通用) -->
         <div class="space-y-6 flex flex-col">
             
-            <!-- 小組賽聚焦面板 (僅在小組賽分頁顯示) -->
-            <div id="panel-focused-feed" class="bg-slate-800 rounded-xl p-4 border border-slate-700 shadow-xl flex flex-col min-h-[160px]">
-                <div class="border-b border-slate-700 pb-2 mb-2 flex items-center justify-between">
-                    <h3 id="match-center-title" class="font-bold text-xs uppercase tracking-wider text-slate-400">Focused Group Feed</h3>
-                    <span id="group-active-badge" class="bg-amber-500/10 text-amber-400 text-[10px] px-2 py-0.5 rounded font-mono font-bold border border-amber-500/20 uppercase">Group A</span>
-                </div>
-                <div id="matches-list" class="space-y-2 overflow-y-auto max-h-[140px] pr-1 text-xs"></div>
-            </div>
-
             <!-- 全球直播直播指南 (自動適應當前分頁) -->
             <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl flex flex-col border-emerald-500/20">
                 <div class="border-b border-slate-700 pb-3 mb-3 space-y-2.5">
@@ -130,7 +121,7 @@
         </div>
     </main>
 
-    <!-- 預測模態視窗 -->
+    <!-- 原有的球隊預測模態視窗 -->
     <div id="team-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
@@ -162,12 +153,35 @@
         </div>
     </div>
 
+    <!-- 🚨 NEW: 全螢幕焦點小組賽程中心彈出視窗 -->
+    <div id="group-feed-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-nodes text-amber-400 animate-pulse"></i>
+                    <h3 id="match-center-title" class="text-base font-black text-slate-100 uppercase tracking-wider">Live Group Feed Center</h3>
+                </div>
+                <span id="group-active-badge" class="bg-amber-500/10 text-amber-400 text-xs px-2.5 py-1 rounded font-mono font-bold border border-amber-500/20 uppercase">Group A</span>
+            </div>
+            
+            <div id="matches-list" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                <!-- Data injects here dynamically -->
+            </div>
+            
+            <div class="bg-slate-900/60 px-6 py-3 border-t border-slate-700/60 flex justify-end">
+                <button onclick="closeGroupFeedModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-4 py-2 rounded-lg border border-slate-600 cursor-pointer transition-colors">
+                    Close Window
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentLang = "en";
         let apiDataStorage = {};
         let globalTournamentData = {}; 
         let activeGroup = "Group A";
-        let currentPhaseView = "group"; // Tracks active structural viewpoint context: 'group' or 'knockout'
+        let currentPhaseView = "group"; 
 
         const teamTranslations = {
             "Mexico": "墨西哥", "South Korea": "南韓", "Czechia": "捷克", "South Africa": "南非",
@@ -222,20 +236,17 @@
             const btnKnockout = document.getElementById("tab-knockout");
             const panelGroup = document.getElementById("panel-group-stage");
             const panelKnockout = document.getElementById("panel-knockout-stage");
-            const panelFocusedFeed = document.getElementById("panel-focused-feed");
 
             if (phase === 'group') {
                 btnGroup.className = "px-4 py-2 text-xs font-black rounded-lg border bg-amber-500/10 border-amber-500/30 text-amber-400 cursor-pointer shadow-sm transition-all";
                 btnKnockout.className = "px-4 py-2 text-xs font-bold rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 cursor-pointer transition-all";
                 panelGroup.classList.remove("hidden");
-                panelFocusedFeed.classList.remove("hidden");
                 panelKnockout.classList.add("hidden");
             } else {
                 btnKnockout.className = "px-4 py-2 text-xs font-black rounded-lg border bg-emerald-500/10 border-emerald-500/30 text-emerald-400 cursor-pointer shadow-sm transition-all";
                 btnGroup.className = "px-4 py-2 text-xs font-bold rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 cursor-pointer transition-all";
                 panelKnockout.classList.remove("hidden");
                 panelGroup.classList.add("hidden");
-                panelFocusedFeed.classList.add("hidden");
             }
             buildDynamicDropdownMenu();
             filterMasterTvGuide();
@@ -353,7 +364,6 @@
                     syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Live Sync Active`;
                 }
                 
-                // 🚀 REARRANGED ORDER: Build dropdown, calculate calculations, then slice layout for Today last!
                 buildDynamicDropdownMenu();
                 calculateStandingsNatively();
                 filterMasterTvGuide(); 
@@ -365,7 +375,6 @@
                     syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Simulated Database`;
                 }
                 
-                // Mirror the exact same chronological execution order on the backup simulation track
                 buildDynamicDropdownMenu();
                 calculateStandingsNatively();
                 filterMasterTvGuide();
@@ -407,14 +416,12 @@
             const filterSelect = document.getElementById("date-filter");
             if (!filterSelect) return;
 
-            // 1. Calculate today's exact local YYYY-MM-DD timestamp
             const now = new Date();
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
-            const todayLocalKey = `${year}-${month}-${day}`; // Generates "2026-06-19"
+            const todayLocalKey = `${year}-${month}-${day}`; 
 
-            // CRITICAL FIX: If the value is currently empty, "all", or missing, force it to default to Today's key string
             let currentSelectedValue = filterSelect.value;
             if (!currentSelectedValue || currentSelectedValue === "all") {
                 currentSelectedValue = todayLocalKey;
@@ -459,10 +466,8 @@
                 filterSelect.appendChild(opt);
             });
 
-            // 2. Firmly lock the value to today's date key row selection
             filterSelect.value = currentSelectedValue;
             
-            // Fallback safety: If it's a rest day and today's date doesn't exist in the data pool, show all matches
             if (filterSelect.selectedIndex === -1) {
                 filterSelect.value = "all";
             }
@@ -530,7 +535,6 @@
 
         function calculateStandingsNatively() {
             Object.keys(apiDataStorage).forEach(groupName => {
-                const isGroup = groupName.startsWith("Group");
                 let baseStandings = apiDataStorage[groupName].teams.map(name => {
                     return { name, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
                 });
@@ -566,6 +570,11 @@
             if (!globalTournamentData[groupName]) return;
             activeGroup = groupName; 
             renderDashboard(); 
+            document.getElementById("group-feed-modal").classList.remove("hidden");
+        }
+
+        function closeGroupFeedModal() {
+            document.getElementById("group-feed-modal").classList.add("hidden");
         }
 
         function resolveTeamPlaceholder(groupKey, seedIdx) {
@@ -617,36 +626,54 @@
             });
             
             updateFocusedGroupPanel();
-            // 🚀 FIXED: Removed filterMasterTvGuide() from here so it stops overriding your startup view!
             renderAutomatedTree();
         }
 
         function updateFocusedGroupPanel() {
             const listEl = document.getElementById("matches-list");
             if (!globalTournamentData[activeGroup] || !listEl) return;
-            document.getElementById("group-active-badge").textContent = activeGroup;
+            
+            const badgeEl = document.getElementById("group-active-badge");
+            if (badgeEl) badgeEl.textContent = activeGroup;
+            
             listEl.innerHTML = "";
             
             globalTournamentData[activeGroup].matches.forEach(m => {
                 const row = document.createElement("div");
-                row.className = `p-3 border border-slate-700/60 bg-slate-900/50 rounded-xl space-y-2`;
-                const dist = m.betDistribution;
+                row.className = "p-4 border border-slate-700/80 bg-slate-900 rounded-xl space-y-3 shadow-md hover:border-slate-600 transition-all";
+                const dist = m.betDistribution || { home: 40, draw: 30, away: 30 };
 
                 row.innerHTML = `
-                    <div class="flex justify-between items-center font-bold text-slate-200">
-                        <span class="truncate w-[100px] text-left">${translateTeam(m.home)}</span>
-                        <div class="flex flex-col items-center min-w-[70px]">
-                            <span class="bg-slate-950 px-2 py-0.5 text-amber-400 font-mono rounded font-black border border-slate-800">${m.score}</span>
-                            <span class="text-[8px] text-slate-400 font-mono mt-0.5">${m.displayTime}</span>
+                    <div class="flex justify-between items-center font-black text-sm text-slate-100">
+                        <span class="truncate w-[160px] text-left flex items-center gap-1.5">
+                            <i class="fa-solid fa-square text-[8px] text-amber-500"></i> ${translateTeam(m.home)}
+                        </span>
+                        <div class="flex flex-col items-center min-w-[100px] bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800">
+                            <span class="text-amber-400 font-mono text-sm tracking-wider font-black">${m.score}</span>
+                            <span class="text-[9px] text-slate-400 font-mono mt-0.5 uppercase font-medium tracking-wide">${m.displayTime}</span>
                         </div>
-                        <span class="truncate w-[100px] text-right">${translateTeam(m.away)}</span>
+                        <span class="truncate w-[160px] text-right flex items-center justify-end gap-1.5">
+                            ${translateTeam(m.away)} <i class="fa-solid fa-square text-[8px] text-emerald-400"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-1.5 pt-1 border-t border-slate-800/40">
+                        <div class="w-full bg-slate-800 rounded-full h-2 flex overflow-hidden shadow-inner">
+                            <div class="bg-gradient-to-r from-amber-500 to-amber-400 h-full transition-all" style="width: ${dist.home}%"></div>
+                            <div class="bg-slate-500 h-full transition-all" style="width: ${dist.draw}%"></div>
+                            <div class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full transition-all" style="width: ${dist.away}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[9px] font-mono font-bold text-slate-400 px-1">
+                            <span class="text-amber-400">Home Vol: ${dist.home}%</span>
+                            <span class="text-slate-400">Draw Vol: ${dist.draw}%</span>
+                            <span class="text-emerald-400">Away Vol: ${dist.away}%</span>
+                        </div>
                     </div>
                 `;
                 listEl.appendChild(row);
             });
         }
 
-        // 🌳 REWRITTEN: Renders a fully loaded, immersive tree matrix directly inside the knockout tab viewport view
         function renderAutomatedTree() {
             const r32Box = document.getElementById("tree-r32-list");
             const r16Box = document.getElementById("tree-r16-list");
@@ -661,7 +688,6 @@
             qfBox.innerHTML = "";
             sfBox.innerHTML = "";
 
-            // Populate Round of 32 nodes dynamically if data matches exist
             if (globalTournamentData["Round Of 32"]) {
                 globalTournamentData["Round Of 32"].matches.forEach((m, idx) => {
                     const block = document.createElement("div");
@@ -677,7 +703,6 @@
                 r32Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Waiting for Group Results...</div>`;
             }
 
-            // Populate Round of 16 nodes
             if (globalTournamentData["Round Of 16"]) {
                 globalTournamentData["Round Of 16"].matches.forEach((m, idx) => {
                     const block = document.createElement("div");
@@ -689,7 +714,6 @@
                 r16Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Projections Locked</div>`;
             }
 
-            // Populate Quarter Finals
             const qfSource = globalTournamentData["Quarter Finals"]?.matches || [
                 { home: `Winner [1st Group E vs 3rd WC]`, away: `Winner [2nd Group A vs 2nd Group B]` },
                 { home: `Winner [1st Group F vs 2nd Group C]`, away: `Winner [1st Group I vs 3rd WC]` }
@@ -701,10 +725,8 @@
                 qfBox.appendChild(block);
             });
 
-            // Populate Semi Finals
             sfBox.innerHTML = `<div class="bg-slate-900/90 p-2.5 border border-pink-950 rounded text-[11px] font-medium text-slate-300 space-y-1"><div class="text-[8px] font-mono text-pink-400">Match 101</div><div>🏆 Winner QF 97</div><div>🏆 Winner QF 98</div></div>`;
             
-            // Grand Final Target Node
             finalNode.innerHTML = `
                 <div class="font-black text-xs text-slate-100 flex flex-col gap-1">
                     <div class="flex items-center gap-1.5 text-yellow-400 font-mono text-[10px] uppercase tracking-wider"><i class="fa-solid fa-trophy"></i> Grand Championship Match</div>
@@ -716,7 +738,6 @@
         function openTeamModal(teamName, groupName) {
             if (!globalTournamentData[groupName] || !globalTournamentData[groupName].probs) return;
             const probs = globalTournamentData[groupName].probs[teamName] || { first: 25, second: 25, text: "" };
-            const txt = i18n[currentLang] || i18n["en"];
             
             document.getElementById("modal-header-title").textContent = `${translateTeam(teamName)}`;
             document.getElementById("modal-prob-1st").textContent = `${probs.first}%`;
@@ -729,7 +750,6 @@
             
             globalTournamentData[groupName].matches.forEach(m => {
                 if(m.home === teamName || m.away === teamName) {
-                    const d = m.betDistribution;
                     const opponent = m.home === teamName ? m.away : m.home;
                     const wrapper = document.createElement("div");
                     wrapper.className = "bg-slate-950 p-2 rounded border border-slate-800 text-[11px] space-y-1.5";
@@ -748,7 +768,11 @@
         }
 
         function closeTeamModal() { document.getElementById("team-modal").classList.add("hidden"); }
-        window.onclick = function(event) { if (event.target === document.getElementById("team-modal")) closeTeamModal(); }
+
+        window.onclick = function(event) { 
+            if (event.target === document.getElementById("team-modal")) closeTeamModal(); 
+            if (event.target === document.getElementById("group-feed-modal")) closeGroupFeedModal();
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             updateStaticTexts();
