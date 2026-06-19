@@ -353,6 +353,7 @@
                     syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Live Sync Active`;
                 }
                 buildDynamicDropdownMenu();
+                filterMasterTvGuide(); 
                 calculateStandingsNatively();
 
             } catch (error) {
@@ -362,6 +363,7 @@
                     syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Simulated Database`;
                 }
                 buildDynamicDropdownMenu();
+                filterMasterTvGuide();
                 calculateStandingsNatively();
             }
         }
