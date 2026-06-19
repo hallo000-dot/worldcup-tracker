@@ -212,7 +212,8 @@
             
             try {
                 // Point directly to your active, live server data stream
-                const response = await fetch('https://worldcup-tracker-c5kgifgry-quantac.vercel.app/api/matches');
+                // Change this line to use your real master production URL:
+const response = await fetch('https://worldcup-tracker-seven.vercel.app/api/matches');
                 if (!response.ok) throw new Error("Backend pipeline returned an error status.");
                 
                 const rawJson = await response.json();
