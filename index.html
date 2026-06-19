@@ -199,10 +199,7 @@
         }
 
         // =========================================================================
-        // PRODUCTION LIVE API FETCH PIPELINE (Bypasses CORS restrictions completely)
-        // =========================================================================
-       // =========================================================================
-        // PRODUCTION LIVE API FETCH PIPELINE (Connecting to your free Vercel server)
+        // PRODUCTION LIVE API FETCH PIPELINE (With Chronological Sorting Optimization)
         // =========================================================================
         async function fetchLiveTournamentData() {
             const syncStatusEl = document.getElementById("sync-status");
@@ -211,15 +208,21 @@
             }
             
             try {
-                // Point directly to your active, live server data stream
-                // Change this line to use your real master production URL:
-const response = await fetch('https://worldcup-tracker-seven.vercel.app/api/matches');
+                // Point directly to your active, live master production server
+                const response = await fetch('https://worldcup-tracker-seven.vercel.app/api/matches');
                 if (!response.ok) throw new Error("Backend pipeline returned an error status.");
                 
                 const rawJson = await response.json();
-                if (!rawJson.matches) throw new Error("Invalid football-data payload structure.");
                 
-                // Clear internal temporary tracking storage prior to populating live feeds
+                // If Vercel intercepted an API key/tier block, route cleanly to backup simulation
+                if (rawJson.isError || !rawJson.matches) {
+                    throw new Error(rawJson.serverMessage || "Invalid football-data payload structure.");
+                }
+                
+                // CRITICAL STEP: Sort all matches chronologically by their exact UTC timestamps first
+                rawJson.matches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
+                
+                // Clear internal temporary tracking storage prior to populating sorted feeds
                 apiDataStorage = {};
                 
                 rawJson.matches.forEach(match => {
