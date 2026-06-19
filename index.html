@@ -198,11 +198,8 @@
             if (tvTitleEl) tvTitleEl.innerHTML = `<i class="fa-solid fa-tv"></i> ${txt.tvTitle}`;
         }
 
-        // =========================================================================
-        // PRODUCTION LIVE API FETCH PIPELINE (With Chronological Sorting Optimization)
-        // =========================================================================
-        // =========================================================================
-        // PRODUCTION LIVE API FETCH PIPELINE (Fixed Local Timezone & Sorting)
+       // =========================================================================
+        // PRODUCTION LIVE API FETCH PIPELINE (Chronological Order Within Containers)
         // =========================================================================
         async function fetchLiveTournamentData() {
             const syncStatusEl = document.getElementById("sync-status");
@@ -220,7 +217,7 @@
                     throw new Error(rawJson.serverMessage || "Invalid football-data payload structure.");
                 }
                 
-                // 1. CRITICAL STEP: Chronological sort by absolute time stamp first
+                // Sort all matches chronologically by absolute timestamp first
                 rawJson.matches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
                 
                 apiDataStorage = {};
@@ -244,7 +241,6 @@
                         computedScore = `${match.score.fullTime.home} - ${match.score.fullTime.away}`;
                     }
 
-                    // 2. FIXED TIMEZONE CONVERSION: Convert UTC to Local Date String safely
                     const matchUtcDate = new Date(match.utcDate);
                     
                     // Creates an accurate 'YYYY-MM-DD' key based on the viewer's local clock context
@@ -267,11 +263,20 @@
                         away: match.awayTeam.name,
                         score: computedScore,
                         status: match.status === "FINISHED" ? "FT" : match.status,
-                        time: localDateKeyStr, // Correct local date index key mapping
+                        time: localDateKeyStr, 
                         displayTime: computedScore === "vs" ? localizedDisplayTime : `${localizedDisplayTime} • ${match.status === "FINISHED" ? "Final" : "Live"}`,
                         betDistribution: { home: homeWeight, draw: drawWeight, away: 100 - (homeWeight + drawWeight) },
-                        stageName: "Group Stage"
+                        stageName: "Group Stage",
+                        // Keep raw date handy for our second sorting pass below
+                        rawDateObject: matchUtcDate 
                     });
+                });
+
+                // =========================================================================
+                // CRITICAL CORRECTION: Force sorting inside each individual group bucket
+                // =========================================================================
+                Object.keys(apiDataStorage).forEach(groupKey => {
+                    apiDataStorage[groupKey].matches.sort((a, b) => a.rawDateObject - b.rawDateObject);
                 });
                 
                 if (syncStatusEl) {
