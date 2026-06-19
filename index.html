@@ -602,7 +602,24 @@
                 let tableRows = "";
                 group.standings.forEach((team, idx) => {
                     const gd = team.gf - team.ga;
-                    const teamProbs = group.probs[team.name] || { first: 25, second: 25 };
+                    
+                    // =========================================================================
+                    // 🚀 LIVE ODDS CALCULATOR: Mirroring the dynamic pop-up logic perfectly
+                    // =========================================================================
+                    let probFirst = 25;
+                    let probSecond = 25;
+
+                    if (team.p > 0) {
+                        const performanceScore = (team.pts * 3) + gd;
+                        probFirst = Math.min(Math.max(25 + (performanceScore * 4), 5), 95);
+                        probSecond = Math.min(Math.max(25 + (performanceScore * 2), 5), 85);
+                        
+                        // Deficit elimination rule
+                        if (team.pts === 0 && team.p >= 2) {
+                            probFirst = 0; probSecond = 2;
+                        }
+                    }
+
                     tableRows += `
                         <tr class="hover:bg-slate-700/60 transition-colors border-b border-slate-700/20 last:border-0 font-medium" onclick="event.stopPropagation(); openTeamModal('${team.name}', '${groupName}')">
                             <td class="py-2 px-1 text-slate-400 font-bold text-center text-xs">${idx + 1}</td>
@@ -611,7 +628,7 @@
                             <td class="py-2 px-1 text-center text-xs font-mono text-amber-400 font-bold">${Math.max(3 - team.p, 0)}</td>
                             <td class="py-2 px-1 text-center text-xs font-mono text-slate-100 font-bold">${team.pts}</td>
                             <td class="py-2 px-1 text-center text-xs font-mono ${gd >= 0 ? 'text-emerald-400':'text-rose-400'}">${gd > 0 ? '+'+gd : gd}</td>
-                            <td class="py-2 px-1 text-right text-[11px] font-mono font-black text-amber-400">${teamProbs.first}%<span class="text-slate-600 font-normal">/</span><span class="text-emerald-400">${teamProbs.second}%</span></td>
+                            <td class="py-2 px-1 text-right text-[11px] font-mono font-black text-amber-400">${Math.round(probFirst)}%<span class="text-slate-600 font-normal">/</span><span class="text-emerald-400">${Math.round(probSecond)}%</span></td>
                         </tr>
                     `;
                 });
