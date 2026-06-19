@@ -401,7 +401,15 @@
             const filterSelect = document.getElementById("date-filter");
             if (!filterSelect) return;
 
-            const currentSelectedValue = filterSelect.value || "all";
+            // 1. Calculate today's exact local YYYY-MM-DD timestamp
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayLocalKey = `${year}-${month}-${day}`; // Generates "2026-06-19"
+
+            // Check if there is an existing manual selection, otherwise default to today
+            const currentSelectedValue = filterSelect.value || todayLocalKey;
             filterSelect.innerHTML = "";
 
             const showAllOpt = document.createElement("option");
@@ -411,7 +419,6 @@
 
             let detectedUniqueDatesSet = new Set();
             Object.keys(apiDataStorage).forEach(gName => {
-                // Adaptive filter: Filter dropdown dates based on current viewport tab state
                 const isGroupContainer = gName.startsWith("Group");
                 if (currentPhaseView === 'group' && !isGroupContainer) return;
                 if (currentPhaseView === 'knockout' && isGroupContainer) return;
@@ -429,14 +436,27 @@
                 const opt = document.createElement("option");
                 opt.value = dateKey;
                 const parsingDateObj = new Date(dateKey + "T00:00:00");
-                opt.textContent = parsingDateObj.toLocaleDateString(currentLang === "zh" ? "zh-TW" : "en-US", {
+                
+                // Add a visual label if the option is actually today
+                let displayLabel = parsingDateObj.toLocaleDateString(currentLang === "zh" ? "zh-TW" : "en-US", {
                     month: "long", day: "numeric", weekday: "short"
                 });
+                
+                if (dateKey === todayLocalKey) {
+                    displayLabel += currentLang === "zh" ? " (今天)" : " (Today)";
+                }
+
+                opt.textContent = displayLabel;
                 filterSelect.appendChild(opt);
             });
 
+            // 2. Lock the value to today (or the manually selected option)
             filterSelect.value = currentSelectedValue;
-            if(filterSelect.selectedIndex === -1) filterSelect.value = "all";
+            
+            // Fallback safety: If there are no games today (e.g., a rest day), default to "Show All"
+            if (filterSelect.selectedIndex === -1) {
+                filterSelect.value = "all";
+            }
         }
 
         function filterMasterTvGuide() {
