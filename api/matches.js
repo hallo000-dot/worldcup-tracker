@@ -1,16 +1,22 @@
 export default async function handler(req, res) {
+  // 1. Set broad CORS headers right at the very beginning
   res.setHeader('Access-Control-Allow-Origin', '*'); 
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-Auth-Token, Content-Type');
+
+  // Handle browser preflight checks automatically
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
   try {
     const targetUrl = 'https://api.football-data.org/v4/competitions/WC/matches';
     
     const response = await fetch(targetUrl, {
-      headers: { 'X-Auth-Token': '82e229ce677b4eed85f13e901243c232' } // Ensure your real key is here
+      headers: { 'X-Auth-Token': '82e229ce677b4eed85f13e901243c232' } // Make sure your real key is here
     });
 
-    // NEW DEBUGGING CODE: If it fails, read the exact message sent by the football server
+    // If the football API rejects us, pass the error out with the CORS headers intact
     if (!response.ok) {
       const errorText = await response.text();
       return res.status(response.status).json({ 
@@ -22,7 +28,9 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     return res.status(200).json(data);
+    
   } catch (error) {
+    // Catch-all server execution errors must also return the CORS context
     return res.status(500).json({ error: error.message });
   }
 }
