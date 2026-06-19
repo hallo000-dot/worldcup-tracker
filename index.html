@@ -59,80 +59,32 @@
             </div>
 
             <!-- 階段 B：淘汰賽專屬大樹狀面板 (隱藏或激活) -->
-            <!-- 階段 B：淘汰賽專屬大樹狀面板 (與 image_e71053.jpg 相同的對稱收斂設計) -->
-            <div id="panel-knockout-stage" class="space-y-6 hidden bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-800 pb-4">
-                    <div>
-                        <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
-                        <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">Tracking the final brackets from the Round of 32 down to the World Cup Champion.</p>
-                    </div>
-                    <div class="mt-2 sm:mt-0 font-mono text-[10px] bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md text-slate-400">
-                        <i class="fa-solid fa-circle-info text-amber-500 mr-1.5"></i> Flow reads from outer wings inward
-                    </div>
+            <div id="panel-knockout-stage" class="space-y-6 hidden">
+                <div>
+                    <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
+                    <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">The group stage has filtered out. Tracking the final 32 nations advancing through the brackets.</p>
                 </div>
                 
-                <!-- 🌳 對稱式淘汰賽樹狀網格系統 -->
-                <div class="grid grid-cols-1 xl:grid-cols-5 gap-4 items-center overflow-x-auto min-w-[800px] py-4 px-2">
-                    
-                    <!-- 列 1: 左翼外側 (32強/16強左半部對陣) -->
-                    <div class="space-y-6">
-                        <div class="text-center font-black tracking-wider text-[10px] text-slate-400 uppercase border-b border-slate-800 pb-1">Left Wing Brackets</div>
-                        <div id="tree-left-wing-list" class="space-y-3">
-                            <!-- 由 JS 動態渲染左半球對陣數據球隊 -->
+                <!-- 橫向響應式樹狀結構圖 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                        <div id="lbl-stage-r32" class="text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 32 Feeds</div>
+                        <div id="tree-r32-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                        <div id="lbl-stage-r16" class="text-[10px] font-black text-indigo-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 16 Bracket</div>
+                        <div id="tree-r16-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                            <div id="lbl-tree-qf-ko" class="text-[10px] font-black text-amber-500 uppercase tracking-wider border-b border-slate-700 pb-1">Quarter-Final Matrix</div>
+                            <div id="tree-qf-list-ko" class="space-y-2"></div>
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                            <div id="lbl-tree-sf-ko" class="text-[10px] font-black text-pink-400 uppercase tracking-wider border-b border-slate-700 pb-1">Semi-Final Matrix</div>
+                            <div id="tree-sf-list-ko" class="space-y-2"></div>
                         </div>
                     </div>
-
-                    <!-- 列 2: 左翼內側 (半準決賽 / Quarter-Finals Left) -->
-                    <div class="space-y-12">
-                        <div class="text-center font-black tracking-wider text-[10px] text-amber-400 uppercase border-b border-slate-800 pb-1">Quarter-Finals</div>
-                        <div id="tree-qf-left" class="space-y-8">
-                            <!-- 左區半準決賽進度盒子 -->
-                        </div>
-                    </div>
-
-                    <!-- 列 3: 核心中央圈 (準決賽 / 總決賽 / 冠軍座席位) -->
-                    <div class="flex flex-col justify-between h-full space-y-8 bg-slate-900/40 p-4 rounded-xl border border-slate-800/60 shadow-inner">
-                        <div class="text-center font-black tracking-wider text-[11px] text-yellow-400 uppercase border-b border-slate-800 pb-1.5 flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-trophy text-xs animate-bounce"></i> Center Stage Final
-                        </div>
-                        
-                        <!-- 準決賽核心線 -->
-                        <div id="tree-sf-center-feed" class="space-y-4 text-xs">
-                            <!-- 存放 Match 101 與 Match 102 的對峙狀態 -->
-                        </div>
-
-                        <!-- 冠軍終端對決核心盒 (完全比照 image_e71053.jpg 中央之冠) -->
-                        <div class="bg-gradient-to-b from-amber-950/40 to-slate-950 p-4 rounded-xl border border-amber-500/40 text-center shadow-xl space-y-3">
-                            <div class="text-[9px] uppercase font-mono tracking-widest text-amber-400 font-black"><i class="fa-solid fa-crown mr-1"></i> Predicted Champion <i class="fa-solid fa-crown ml-1"></i></div>
-                            <div id="bracket-champion-box" class="text-base font-black text-white tracking-wide bg-slate-900 py-2.5 px-2 rounded border border-slate-800 uppercase shadow-md animate-pulse">
-                                TBD
-                            </div>
-                            <div class="text-[9px] text-slate-500 font-mono" id="tree-final-date-loc">July 19 • New York</div>
-                        </div>
-
-                        <!-- 季軍與殿軍附加席位 (右側小裝飾盒) -->
-                        <div class="bg-slate-950/80 p-2 rounded border border-slate-800 text-[10px] text-center space-y-1">
-                            <div class="text-slate-500 font-bold uppercase tracking-wider text-[8px]">Consolation Stage</div>
-                            <div class="text-slate-300 font-medium">3rd Place: <span id="lbl-3rd-place" class="font-bold text-slate-100">TBD</span></div>
-                        </div>
-                    </div>
-
-                    <!-- 列 4: 右翼內側 (半準決賽 / Quarter-Finals Right) -->
-                    <div class="space-y-12">
-                        <div class="text-center font-black tracking-wider text-[10px] text-amber-400 uppercase border-b border-slate-800 pb-1">Quarter-Finals</div>
-                        <div id="tree-qf-right" class="space-y-8">
-                            <!-- 右區半準決賽進度盒子 -->
-                        </div>
-                    </div>
-
-                    <!-- 列 5: 右翼外側 (32強/16強右半部對陣) -->
-                    <div class="space-y-6">
-                        <div class="text-center font-black tracking-wider text-[10px] text-slate-400 uppercase border-b border-slate-800 pb-1">Right Wing Brackets</div>
-                        <div id="tree-right-wing-list" class="space-y-3">
-                            <!-- 由 JS 動態渲染右半球對陣數據球隊 -->
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -421,11 +373,8 @@
         }
 
         function generateSmartSimulatedStream() {
-            // Clear out storage before mounting mockup structures
-            apiDataStorage = {};
-            
-            // 1. Mount standard Group layout keys as normal
-            if (window.officialGroupsConfig) {
+            if (window.officialGroupsConfig && window.masterChronoScheduleMap) {
+                apiDataStorage = {};
                 Object.keys(window.officialGroupsConfig).forEach(gName => {
                     apiDataStorage[gName] = {
                         teams: window.officialGroupsConfig[gName].teams,
@@ -433,44 +382,22 @@
                         probs: window.officialGroupsConfig[gName].probs || {}
                     };
                 });
-            }
-
-            // 2. 🧪 DUMMY DATA INJECTION: Force-feed real advancement rows to test your layout wings!
-            apiDataStorage["Round Of 32"] = {
-                teams: ["Mexico", "Switzerland", "Brazil", "United States", "Germany", "Netherlands", "Belgium", "Spain"],
-                matches: [
-                    { home: "Mexico", away: "Switzerland", score: "3 - 2", status: "FT", time: "2026-06-28", displayTime: "Sun, Jun 28 • 12:00", stageName: "Round of 32" },
-                    { home: "Brazil", away: "United States", score: "1 - 2", status: "FT", time: "2026-06-28", displayTime: "Sun, Jun 28 • 16:30", stageName: "Round of 32" },
-                    { home: "Germany", away: "Netherlands", score: "0 - 1", status: "FT", time: "2026-06-29", displayTime: "Mon, Jun 29 • 13:00", stageName: "Round of 32" },
-                    { home: "Belgium", away: "Spain", score: "2 - 2", status: "Live", time: "2026-06-29", displayTime: "Mon, Jun 29 • 18:00", stageName: "Round of 32" },
-                    { home: "Canada", away: "Argentina", score: "vs", status: "Upcoming", time: "2026-06-30", displayTime: "Tue, Jun 30 • 14:00", stageName: "Round of 32" },
-                    { home: "England", away: "Portugal", score: "vs", status: "Upcoming", time: "2026-06-30", displayTime: "Tue, Jun 30 • 19:00", stageName: "Round of 32" }
-                ],
-                probs: {}
-            };
-
-            apiDataStorage["Round Of 16"] = {
-                teams: ["Mexico", "United States", "Netherlands"],
-                matches: [
-                    { home: "Mexico", away: "United States", score: "vs", status: "Upcoming", time: "2026-07-04", displayTime: "Sat, Jul 4 • 13:00", stageName: "Round of 16" },
-                    { home: "Netherlands", away: "TBD", score: "vs", status: "Upcoming", time: "2026-07-05", displayTime: "Sun, Jul 5 • 17:00", stageName: "Round of 16" }
-                ],
-                probs: {}
-            };
-            
-            // Map the old calendar schedule back into group tables as fallback safety
-            if (window.masterChronoScheduleMap) {
                 Object.keys(window.masterChronoScheduleMap).forEach(dateKey => {
-                    if (dateKey.startsWith("stage-")) return;
                     window.masterChronoScheduleMap[dateKey].forEach(m => {
-                        if (apiDataStorage[m.context]) {
-                            apiDataStorage[m.context].matches.push({
-                                home: m.home, away: m.away, score: m.score, status: m.status,
-                                time: dateKey, displayTime: m.displayTime,
-                                betDistribution: m.betDistribution || { home: 40, draw: 30, away: 30 },
-                                stageName: "Group Stage"
-                            });
+                        const targetKey = dateKey.startsWith("stage-") ? m.context : m.context;
+                        if (!apiDataStorage[targetKey]) {
+                            apiDataStorage[targetKey] = { teams: [], matches: [], probs: {} };
                         }
+                        apiDataStorage[targetKey].matches.push({
+                            home: m.home || m.homeKey,
+                            away: m.away || m.awayKey,
+                            score: m.score,
+                            status: m.status,
+                            time: dateKey.startsWith("stage-") ? "2026-06-28" : dateKey, 
+                            displayTime: m.displayTime,
+                            betDistribution: m.betDistribution || { home: 40, draw: 30, away: 30 },
+                            stageName: dateKey.startsWith("stage-") ? dateKey.split("stage-")[1] : "Group Stage"
+                        });
                     });
                 });
             }
@@ -721,103 +648,69 @@
 
         // 🌳 REWRITTEN: Renders a fully loaded, immersive tree matrix directly inside the knockout tab viewport view
         function renderAutomatedTree() {
-            const leftWingBox = document.getElementById("tree-left-wing-list");
-            const rightWingBox = document.getElementById("tree-right-wing-list");
-            const qfLeftBox = document.getElementById("tree-qf-left");
-            const qfRightBox = document.getElementById("tree-qf-right");
-            const sfCenterBox = document.getElementById("tree-sf-center-feed");
-            const championSeat = document.getElementById("bracket-champion-box");
+            const r32Box = document.getElementById("tree-r32-list");
+            const r16Box = document.getElementById("tree-r16-list");
+            const qfBox = document.getElementById("tree-qf-list-ko");
+            const sfBox = document.getElementById("tree-sf-list-ko");
+            const finalNode = document.getElementById("tree-final-node");
 
-            if (!leftWingBox || !rightWingBox || !qfLeftBox || !qfRightBox || !sfCenterBox || !championSeat) return;
+            if (!r32Box || !r16Box || !qfBox || !sfBox || !finalNode) return;
 
-            leftWingBox.innerHTML = "";
-            rightWingBox.innerHTML = "";
-            qfLeftBox.innerHTML = "";
-            qfRightBox.innerHTML = "";
-            sfCenterBox.innerHTML = "";
+            r32Box.innerHTML = "";
+            r16Box.innerHTML = "";
+            qfBox.innerHTML = "";
+            sfBox.innerHTML = "";
 
-            // 1. DISTRIBUTE ROUND OF 32 / ROUND OF 16 TO OUTER WINGS (LEFT VS RIGHT)
-            if (globalTournamentData["Round Of 32"] && globalTournamentData["Round Of 32"].matches) {
+            // Populate Round of 32 nodes dynamically if data matches exist
+            if (globalTournamentData["Round Of 32"]) {
                 globalTournamentData["Round Of 32"].matches.forEach((m, idx) => {
                     const block = document.createElement("div");
-                    block.className = "bg-slate-900/90 border border-slate-800/80 p-2 rounded-lg text-[11px] font-medium flex flex-col gap-1 transition-all hover:border-slate-700 shadow-md";
-                    
-                    const isFinished = m.status === "FT" || m.status === "FINISHED";
+                    block.className = "bg-slate-900/90 border border-slate-800 p-2 rounded text-[11px] font-medium flex flex-col gap-0.5";
                     block.innerHTML = `
-                        <div class="flex justify-between text-[8px] font-mono text-slate-500 border-b border-slate-950 pb-0.5">
-                            <span>MATCH ${idx+1} • ${m.stageName}</span>
-                            <span class="text-slate-400">${m.time.split('-')[1] || '06'}/${m.time.split('-')[2] || '18'}</span>
-                        </div>
-                        <div class="flex justify-between font-bold text-slate-200">
-                            <span class="truncate max-w-[100px]"><i class="fa-solid fa-flag text-slate-500 mr-1 text-[9px]"></i>${translateTeam(m.home)}</span>
-                            <span class="font-mono text-amber-400 font-black">${m.score}</span>
-                        </div>
-                        <div class="flex justify-between font-bold text-slate-200">
-                            <span class="truncate max-w-[100px]"><i class="fa-solid fa-flag text-slate-600 mr-1 text-[9px]"></i>${translateTeam(m.away)}</span>
-                            <span class="text-[9px] font-mono ${isFinished ? 'text-slate-500':'text-emerald-400 font-black'}">${m.status}</span>
-                        </div>
+                        <div class="flex justify-between text-[8px] font-mono text-slate-500"><span>Match ${idx+1}</span><span>${m.displayTime.split('•')[0]}</span></div>
+                        <div class="flex justify-between font-bold text-slate-200"><span>${translateTeam(m.home)}</span><span class="text-amber-400">${m.score}</span></div>
+                        <div class="flex justify-between font-bold text-slate-200"><span>${translateTeam(m.away)}</span></div>
                     `;
-                    
-                    // Split symmetrically: Even indices build out left wing layout, Odd indices build right wing layout
-                    if (idx % 2 === 0) {
-                        leftWingBox.appendChild(block);
-                    } else {
-                        rightWingBox.appendChild(block);
-                    }
+                    r32Box.appendChild(block);
                 });
             } else {
-                const fallbackHtml = `<div class="text-[10px] text-slate-600 font-mono text-center py-6 border border-dashed border-slate-800 rounded-lg">Awaiting Group Outputs...</div>`;
-                leftWingBox.innerHTML = fallbackHtml;
-                rightWingBox.innerHTML = fallbackHtml;
+                r32Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Waiting for Group Results...</div>`;
             }
 
-            // 2. RENDER QUARTER-FINALS INNER CORRIDORS (LEFT & RIGHT SYMMETRY)
-            const mockQF = [
-                { home: `Winner Match 1`, away: `Winner Match 3`, side: 'left', matchNum: 97 },
-                { home: `Winner Match 2`, away: `Winner Match 4`, side: 'right', matchNum: 98 }
+            // Populate Round of 16 nodes
+            if (globalTournamentData["Round Of 16"]) {
+                globalTournamentData["Round Of 16"].matches.forEach((m, idx) => {
+                    const block = document.createElement("div");
+                    block.className = "bg-slate-900/90 border border-indigo-950 p-2 rounded text-[11px] flex flex-col gap-0.5";
+                    block.innerHTML = `<div class="text-[8px] font-mono text-indigo-400">R16 Match ${idx+1}</div><div class="truncate text-slate-300 font-bold">${translateTeam(m.home)} vs ${translateTeam(m.away)}</div>`;
+                    r16Box.appendChild(block);
+                });
+            } else {
+                r16Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Projections Locked</div>`;
+            }
+
+            // Populate Quarter Finals
+            const qfSource = globalTournamentData["Quarter Finals"]?.matches || [
+                { home: `Winner [1st Group E vs 3rd WC]`, away: `Winner [2nd Group A vs 2nd Group B]` },
+                { home: `Winner [1st Group F vs 2nd Group C]`, away: `Winner [1st Group I vs 3rd WC]` }
             ];
-            
-            mockQF.forEach(qf => {
+            qfSource.forEach((m, idx) => {
                 const block = document.createElement("div");
-                block.className = "bg-slate-900/90 border border-slate-800 p-2 rounded-lg text-[11px] font-medium flex flex-col gap-0.5 shadow-md";
-                block.innerHTML = `
-                    <div class="text-[8px] font-mono text-amber-500 font-black border-b border-slate-950 pb-0.5 mb-1">QF MATCH ${qf.matchNum}</div>
-                    <div class="truncate font-bold text-slate-300 flex items-center gap-1"><i class="fa-solid fa-square-caret-right text-[10px] text-amber-500"></i> ${translateTeam(qf.home)}</div>
-                    <div class="truncate font-bold text-slate-300 flex items-center gap-1"><i class="fa-solid fa-square-caret-right text-[10px] text-amber-600"></i> ${translateTeam(qf.away)}</div>
-                `;
-                if (qf.side === 'left') qfLeftBox.appendChild(block);
-                else qfRightBox.appendChild(block);
+                block.className = "bg-slate-900/90 border border-amber-950 p-2 rounded text-[11px] flex flex-col gap-0.5";
+                block.innerHTML = `<div class="text-[8px] font-mono text-amber-500">QF Match ${idx+97}</div><div class="truncate text-slate-200 font-bold">${translateTeam(m.home)}</div><div class="truncate text-slate-200 font-bold">${translateTeam(m.away)}</div>`;
+                qfBox.appendChild(block);
             });
 
-            // 3. RENDER CENTRAL SEMI-FINALS INTERSECTIONS
-            sfCenterBox.innerHTML = `
-                <div class="bg-slate-950/80 p-2.5 border border-slate-800 rounded-lg space-y-1 text-[11px]">
-                    <div class="text-[8px] font-mono text-pink-500 font-black flex justify-between"><span>SF MATCH 101</span><span class="text-slate-500">July 14</span></div>
-                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 97</div>
-                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 98</div>
-                </div>
-                <div class="bg-slate-950/80 p-2.5 border border-slate-800 rounded-lg space-y-1 text-[11px]">
-                    <div class="text-[8px] font-mono text-pink-500 font-black flex justify-between"><span>SF MATCH 102</span><span class="text-slate-500">July 15</span></div>
-                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 99</div>
-                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 100</div>
-                </div>
-            `;
-
-            // 4. THE ULTIMATE CHAMPION SEAT RESOLUTION
-            // Scans if final match data exists inside global array, else displays bracket placeholder destination
-            if (globalTournamentData["Final"] && globalTournamentData["Final"].matches && globalTournamentData["Final"].matches[0]) {
-                const finalMatchObj = globalTournamentData["Final"].matches[0];
-                if (finalMatchObj.status === "FT" || finalMatchObj.status === "FINISHED") {
-                    const scoreParts = finalMatchObj.score.split("-").map(Number);
-                    const winnerString = scoreParts[0] > scoreParts[1] ? finalMatchObj.home : finalMatchObj.away;
-                    championSeat.textContent = translateTeam(winnerString);
-                    championSeat.className = "text-base font-black text-yellow-400 tracking-widest bg-amber-500/10 py-2.5 px-2 rounded border border-yellow-400 uppercase shadow-lg text-center animate-pulse";
-                } else {
-                    championSeat.textContent = "Live Final In Progress";
-                }
-            } else {
-                championSeat.textContent = "Winner Match 101";
-            }
+            // Populate Semi Finals
+            sfBox.innerHTML = `<div class="bg-slate-900/90 p-2.5 border border-pink-950 rounded text-[11px] font-medium text-slate-300 space-y-1"><div class="text-[8px] font-mono text-pink-400">Match 101</div><div>🏆 Winner QF 97</div><div>🏆 Winner QF 98</div></div>`;
+            
+            // Grand Final Target Node
+            finalNode.innerHTML = `
+                <div class="font-black text-xs text-slate-100 flex flex-col gap-1">
+                    <div class="flex items-center gap-1.5 text-yellow-400 font-mono text-[10px] uppercase tracking-wider"><i class="fa-solid fa-trophy"></i> Grand Championship Match</div>
+                    <div class="bg-slate-950 px-3 py-2 rounded border border-slate-800 text-slate-300 font-bold">🥇 Winner Semi-Final Match 101</div>
+                    <div class="bg-slate-950 px-3 py-2 rounded border border-slate-800 text-slate-300 font-bold mt-1">🥇 Winner Semi-Final Match 102</div>
+                </div>`;
         }
 
         function openTeamModal(teamName, groupName) {
@@ -859,14 +752,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             updateStaticTexts();
-            
-            // 1. ❌ Comment out the live fetch so it doesn't overwrite our test data
-            // fetchLiveTournamentData(); 
-            
-            // 2. 🧪 Force the mockup pipeline to run immediately on boot
-            generateSmartSimulatedStream();
-            calculateStandingsNatively();
-            
+            fetchLiveTournamentData();
             setInterval(fetchLiveTournamentData, 60000); 
         });
     </script>
