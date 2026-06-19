@@ -414,12 +414,8 @@
             const day = String(now.getDate()).padStart(2, '0');
             const todayLocalKey = `${year}-${month}-${day}`; // Generates "2026-06-19"
 
-            // CRITICAL FIX: If the value is currently empty, "all", or missing, force it to default to Today's key string
-            let currentSelectedValue = filterSelect.value;
-            if (!currentSelectedValue || currentSelectedValue === "all") {
-                currentSelectedValue = todayLocalKey;
-            }
-            
+            // Check if there is an existing manual selection, otherwise default to today
+            const currentSelectedValue = filterSelect.value || todayLocalKey;
             filterSelect.innerHTML = "";
 
             const showAllOpt = document.createElement("option");
@@ -447,6 +443,7 @@
                 opt.value = dateKey;
                 const parsingDateObj = new Date(dateKey + "T00:00:00");
                 
+                // Add a visual label if the option is actually today
                 let displayLabel = parsingDateObj.toLocaleDateString(currentLang === "zh" ? "zh-TW" : "en-US", {
                     month: "long", day: "numeric", weekday: "short"
                 });
@@ -459,10 +456,10 @@
                 filterSelect.appendChild(opt);
             });
 
-            // 2. Firmly lock the value to today's date key row selection
+            // 2. Lock the value to today (or the manually selected option)
             filterSelect.value = currentSelectedValue;
             
-            // Fallback safety: If it's a rest day and today's date doesn't exist in the data pool, show all matches
+            // Fallback safety: If there are no games today (e.g., a rest day), default to "Show All"
             if (filterSelect.selectedIndex === -1) {
                 filterSelect.value = "all";
             }
