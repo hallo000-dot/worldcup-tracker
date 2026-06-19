@@ -612,7 +612,9 @@
                     </table>`;
                 container.appendChild(card);
             });
+            
             updateFocusedGroupPanel();
+            // 🚀 FIXED: Removed filterMasterTvGuide() from here so it stops overriding your startup view!
             renderAutomatedTree();
         }
 
