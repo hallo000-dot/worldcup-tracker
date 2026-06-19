@@ -421,8 +421,11 @@
         }
 
         function generateSmartSimulatedStream() {
-            if (window.officialGroupsConfig && window.masterChronoScheduleMap) {
-                apiDataStorage = {};
+            // Clear out storage before mounting mockup structures
+            apiDataStorage = {};
+            
+            // 1. Mount standard Group layout keys as normal
+            if (window.officialGroupsConfig) {
                 Object.keys(window.officialGroupsConfig).forEach(gName => {
                     apiDataStorage[gName] = {
                         teams: window.officialGroupsConfig[gName].teams,
@@ -430,22 +433,44 @@
                         probs: window.officialGroupsConfig[gName].probs || {}
                     };
                 });
+            }
+
+            // 2. 🧪 DUMMY DATA INJECTION: Force-feed real advancement rows to test your layout wings!
+            apiDataStorage["Round Of 32"] = {
+                teams: ["Mexico", "Switzerland", "Brazil", "United States", "Germany", "Netherlands", "Belgium", "Spain"],
+                matches: [
+                    { home: "Mexico", away: "Switzerland", score: "3 - 2", status: "FT", time: "2026-06-28", displayTime: "Sun, Jun 28 • 12:00", stageName: "Round of 32" },
+                    { home: "Brazil", away: "United States", score: "1 - 2", status: "FT", time: "2026-06-28", displayTime: "Sun, Jun 28 • 16:30", stageName: "Round of 32" },
+                    { home: "Germany", away: "Netherlands", score: "0 - 1", status: "FT", time: "2026-06-29", displayTime: "Mon, Jun 29 • 13:00", stageName: "Round of 32" },
+                    { home: "Belgium", away: "Spain", score: "2 - 2", status: "Live", time: "2026-06-29", displayTime: "Mon, Jun 29 • 18:00", stageName: "Round of 32" },
+                    { home: "Canada", away: "Argentina", score: "vs", status: "Upcoming", time: "2026-06-30", displayTime: "Tue, Jun 30 • 14:00", stageName: "Round of 32" },
+                    { home: "England", away: "Portugal", score: "vs", status: "Upcoming", time: "2026-06-30", displayTime: "Tue, Jun 30 • 19:00", stageName: "Round of 32" }
+                ],
+                probs: {}
+            };
+
+            apiDataStorage["Round Of 16"] = {
+                teams: ["Mexico", "United States", "Netherlands"],
+                matches: [
+                    { home: "Mexico", away: "United States", score: "vs", status: "Upcoming", time: "2026-07-04", displayTime: "Sat, Jul 4 • 13:00", stageName: "Round of 16" },
+                    { home: "Netherlands", away: "TBD", score: "vs", status: "Upcoming", time: "2026-07-05", displayTime: "Sun, Jul 5 • 17:00", stageName: "Round of 16" }
+                ],
+                probs: {}
+            };
+            
+            // Map the old calendar schedule back into group tables as fallback safety
+            if (window.masterChronoScheduleMap) {
                 Object.keys(window.masterChronoScheduleMap).forEach(dateKey => {
+                    if (dateKey.startsWith("stage-")) return;
                     window.masterChronoScheduleMap[dateKey].forEach(m => {
-                        const targetKey = dateKey.startsWith("stage-") ? m.context : m.context;
-                        if (!apiDataStorage[targetKey]) {
-                            apiDataStorage[targetKey] = { teams: [], matches: [], probs: {} };
+                        if (apiDataStorage[m.context]) {
+                            apiDataStorage[m.context].matches.push({
+                                home: m.home, away: m.away, score: m.score, status: m.status,
+                                time: dateKey, displayTime: m.displayTime,
+                                betDistribution: m.betDistribution || { home: 40, draw: 30, away: 30 },
+                                stageName: "Group Stage"
+                            });
                         }
-                        apiDataStorage[targetKey].matches.push({
-                            home: m.home || m.homeKey,
-                            away: m.away || m.awayKey,
-                            score: m.score,
-                            status: m.status,
-                            time: dateKey.startsWith("stage-") ? "2026-06-28" : dateKey, 
-                            displayTime: m.displayTime,
-                            betDistribution: m.betDistribution || { home: 40, draw: 30, away: 30 },
-                            stageName: dateKey.startsWith("stage-") ? dateKey.split("stage-")[1] : "Group Stage"
-                        });
                     });
                 });
             }
@@ -834,7 +859,14 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             updateStaticTexts();
-            fetchLiveTournamentData();
+            
+            // 1. ❌ Comment out the live fetch so it doesn't overwrite our test data
+            // fetchLiveTournamentData(); 
+            
+            // 2. 🧪 Force the mockup pipeline to run immediately on boot
+            generateSmartSimulatedStream();
+            calculateStandingsNatively();
+            
             setInterval(fetchLiveTournamentData, 60000); 
         });
     </script>
