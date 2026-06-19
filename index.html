@@ -208,7 +208,7 @@
             }
             
             try {
-                const response = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
+                const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://api.football-data.org/v4/competitions/WC/matches'), {
                     headers: { 'X-Auth-Token': '82e229ce677b4eed85f13e901243c232' }
                 });
                 if (!response.ok) throw new Error("API Limit reached or placeholder token");
