@@ -696,69 +696,103 @@
 
         // 🌳 REWRITTEN: Renders a fully loaded, immersive tree matrix directly inside the knockout tab viewport view
         function renderAutomatedTree() {
-            const r32Box = document.getElementById("tree-r32-list");
-            const r16Box = document.getElementById("tree-r16-list");
-            const qfBox = document.getElementById("tree-qf-list-ko");
-            const sfBox = document.getElementById("tree-sf-list-ko");
-            const finalNode = document.getElementById("tree-final-node");
+            const leftWingBox = document.getElementById("tree-left-wing-list");
+            const rightWingBox = document.getElementById("tree-right-wing-list");
+            const qfLeftBox = document.getElementById("tree-qf-left");
+            const qfRightBox = document.getElementById("tree-qf-right");
+            const sfCenterBox = document.getElementById("tree-sf-center-feed");
+            const championSeat = document.getElementById("bracket-champion-box");
 
-            if (!r32Box || !r16Box || !qfBox || !sfBox || !finalNode) return;
+            if (!leftWingBox || !rightWingBox || !qfLeftBox || !qfRightBox || !sfCenterBox || !championSeat) return;
 
-            r32Box.innerHTML = "";
-            r16Box.innerHTML = "";
-            qfBox.innerHTML = "";
-            sfBox.innerHTML = "";
+            leftWingBox.innerHTML = "";
+            rightWingBox.innerHTML = "";
+            qfLeftBox.innerHTML = "";
+            qfRightBox.innerHTML = "";
+            sfCenterBox.innerHTML = "";
 
-            // Populate Round of 32 nodes dynamically if data matches exist
-            if (globalTournamentData["Round Of 32"]) {
+            // 1. DISTRIBUTE ROUND OF 32 / ROUND OF 16 TO OUTER WINGS (LEFT VS RIGHT)
+            if (globalTournamentData["Round Of 32"] && globalTournamentData["Round Of 32"].matches) {
                 globalTournamentData["Round Of 32"].matches.forEach((m, idx) => {
                     const block = document.createElement("div");
-                    block.className = "bg-slate-900/90 border border-slate-800 p-2 rounded text-[11px] font-medium flex flex-col gap-0.5";
+                    block.className = "bg-slate-900/90 border border-slate-800/80 p-2 rounded-lg text-[11px] font-medium flex flex-col gap-1 transition-all hover:border-slate-700 shadow-md";
+                    
+                    const isFinished = m.status === "FT" || m.status === "FINISHED";
                     block.innerHTML = `
-                        <div class="flex justify-between text-[8px] font-mono text-slate-500"><span>Match ${idx+1}</span><span>${m.displayTime.split('•')[0]}</span></div>
-                        <div class="flex justify-between font-bold text-slate-200"><span>${translateTeam(m.home)}</span><span class="text-amber-400">${m.score}</span></div>
-                        <div class="flex justify-between font-bold text-slate-200"><span>${translateTeam(m.away)}</span></div>
+                        <div class="flex justify-between text-[8px] font-mono text-slate-500 border-b border-slate-950 pb-0.5">
+                            <span>MATCH ${idx+1} • ${m.stageName}</span>
+                            <span class="text-slate-400">${m.time.split('-')[1] || '06'}/${m.time.split('-')[2] || '18'}</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-slate-200">
+                            <span class="truncate max-w-[100px]"><i class="fa-solid fa-flag text-slate-500 mr-1 text-[9px]"></i>${translateTeam(m.home)}</span>
+                            <span class="font-mono text-amber-400 font-black">${m.score}</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-slate-200">
+                            <span class="truncate max-w-[100px]"><i class="fa-solid fa-flag text-slate-600 mr-1 text-[9px]"></i>${translateTeam(m.away)}</span>
+                            <span class="text-[9px] font-mono ${isFinished ? 'text-slate-500':'text-emerald-400 font-black'}">${m.status}</span>
+                        </div>
                     `;
-                    r32Box.appendChild(block);
+                    
+                    // Split symmetrically: Even indices build out left wing layout, Odd indices build right wing layout
+                    if (idx % 2 === 0) {
+                        leftWingBox.appendChild(block);
+                    } else {
+                        rightWingBox.appendChild(block);
+                    }
                 });
             } else {
-                r32Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Waiting for Group Results...</div>`;
+                const fallbackHtml = `<div class="text-[10px] text-slate-600 font-mono text-center py-6 border border-dashed border-slate-800 rounded-lg">Awaiting Group Outputs...</div>`;
+                leftWingBox.innerHTML = fallbackHtml;
+                rightWingBox.innerHTML = fallbackHtml;
             }
 
-            // Populate Round of 16 nodes
-            if (globalTournamentData["Round Of 16"]) {
-                globalTournamentData["Round Of 16"].matches.forEach((m, idx) => {
-                    const block = document.createElement("div");
-                    block.className = "bg-slate-900/90 border border-indigo-950 p-2 rounded text-[11px] flex flex-col gap-0.5";
-                    block.innerHTML = `<div class="text-[8px] font-mono text-indigo-400">R16 Match ${idx+1}</div><div class="truncate text-slate-300 font-bold">${translateTeam(m.home)} vs ${translateTeam(m.away)}</div>`;
-                    r16Box.appendChild(block);
-                });
-            } else {
-                r16Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Projections Locked</div>`;
-            }
-
-            // Populate Quarter Finals
-            const qfSource = globalTournamentData["Quarter Finals"]?.matches || [
-                { home: `Winner [1st Group E vs 3rd WC]`, away: `Winner [2nd Group A vs 2nd Group B]` },
-                { home: `Winner [1st Group F vs 2nd Group C]`, away: `Winner [1st Group I vs 3rd WC]` }
+            // 2. RENDER QUARTER-FINALS INNER CORRIDORS (LEFT & RIGHT SYMMETRY)
+            const mockQF = [
+                { home: `Winner Match 1`, away: `Winner Match 3`, side: 'left', matchNum: 97 },
+                { home: `Winner Match 2`, away: `Winner Match 4`, side: 'right', matchNum: 98 }
             ];
-            qfSource.forEach((m, idx) => {
+            
+            mockQF.forEach(qf => {
                 const block = document.createElement("div");
-                block.className = "bg-slate-900/90 border border-amber-950 p-2 rounded text-[11px] flex flex-col gap-0.5";
-                block.innerHTML = `<div class="text-[8px] font-mono text-amber-500">QF Match ${idx+97}</div><div class="truncate text-slate-200 font-bold">${translateTeam(m.home)}</div><div class="truncate text-slate-200 font-bold">${translateTeam(m.away)}</div>`;
-                qfBox.appendChild(block);
+                block.className = "bg-slate-900/90 border border-slate-800 p-2 rounded-lg text-[11px] font-medium flex flex-col gap-0.5 shadow-md";
+                block.innerHTML = `
+                    <div class="text-[8px] font-mono text-amber-500 font-black border-b border-slate-950 pb-0.5 mb-1">QF MATCH ${qf.matchNum}</div>
+                    <div class="truncate font-bold text-slate-300 flex items-center gap-1"><i class="fa-solid fa-square-caret-right text-[10px] text-amber-500"></i> ${translateTeam(qf.home)}</div>
+                    <div class="truncate font-bold text-slate-300 flex items-center gap-1"><i class="fa-solid fa-square-caret-right text-[10px] text-amber-600"></i> ${translateTeam(qf.away)}</div>
+                `;
+                if (qf.side === 'left') qfLeftBox.appendChild(block);
+                else qfRightBox.appendChild(block);
             });
 
-            // Populate Semi Finals
-            sfBox.innerHTML = `<div class="bg-slate-900/90 p-2.5 border border-pink-950 rounded text-[11px] font-medium text-slate-300 space-y-1"><div class="text-[8px] font-mono text-pink-400">Match 101</div><div>🏆 Winner QF 97</div><div>🏆 Winner QF 98</div></div>`;
-            
-            // Grand Final Target Node
-            finalNode.innerHTML = `
-                <div class="font-black text-xs text-slate-100 flex flex-col gap-1">
-                    <div class="flex items-center gap-1.5 text-yellow-400 font-mono text-[10px] uppercase tracking-wider"><i class="fa-solid fa-trophy"></i> Grand Championship Match</div>
-                    <div class="bg-slate-950 px-3 py-2 rounded border border-slate-800 text-slate-300 font-bold">🥇 Winner Semi-Final Match 101</div>
-                    <div class="bg-slate-950 px-3 py-2 rounded border border-slate-800 text-slate-300 font-bold mt-1">🥇 Winner Semi-Final Match 102</div>
-                </div>`;
+            // 3. RENDER CENTRAL SEMI-FINALS INTERSECTIONS
+            sfCenterBox.innerHTML = `
+                <div class="bg-slate-950/80 p-2.5 border border-slate-800 rounded-lg space-y-1 text-[11px]">
+                    <div class="text-[8px] font-mono text-pink-500 font-black flex justify-between"><span>SF MATCH 101</span><span class="text-slate-500">July 14</span></div>
+                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 97</div>
+                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 98</div>
+                </div>
+                <div class="bg-slate-950/80 p-2.5 border border-slate-800 rounded-lg space-y-1 text-[11px]">
+                    <div class="text-[8px] font-mono text-pink-500 font-black flex justify-between"><span>SF MATCH 102</span><span class="text-slate-500">July 15</span></div>
+                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 99</div>
+                    <div class="font-bold text-slate-300 truncate">🏆 Winner QF Match 100</div>
+                </div>
+            `;
+
+            // 4. THE ULTIMATE CHAMPION SEAT RESOLUTION
+            // Scans if final match data exists inside global array, else displays bracket placeholder destination
+            if (globalTournamentData["Final"] && globalTournamentData["Final"].matches && globalTournamentData["Final"].matches[0]) {
+                const finalMatchObj = globalTournamentData["Final"].matches[0];
+                if (finalMatchObj.status === "FT" || finalMatchObj.status === "FINISHED") {
+                    const scoreParts = finalMatchObj.score.split("-").map(Number);
+                    const winnerString = scoreParts[0] > scoreParts[1] ? finalMatchObj.home : finalMatchObj.away;
+                    championSeat.textContent = translateTeam(winnerString);
+                    championSeat.className = "text-base font-black text-yellow-400 tracking-widest bg-amber-500/10 py-2.5 px-2 rounded border border-yellow-400 uppercase shadow-lg text-center animate-pulse";
+                } else {
+                    championSeat.textContent = "Live Final In Progress";
+                }
+            } else {
+                championSeat.textContent = "Winner Match 101";
+            }
         }
 
         function openTeamModal(teamName, groupName) {
