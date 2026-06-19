@@ -224,17 +224,32 @@
                 
                 rawJson.matches.forEach(match => {
                     const rawGroupName = match.group;
-                    if (!rawGroupName) return;
-
-                    const formattedGroupKey = rawGroupName.replace("_", " ").toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase());
+                    const rawStageName = match.stage; 
                     
-                    if (!apiDataStorage[formattedGroupKey]) {
-                        apiDataStorage[formattedGroupKey] = { teams: [], matches: [], probs: {} };
+                    let containerKey = "";
+                    let stageLabel = "Group Stage";
+
+                    if (rawGroupName) {
+                        containerKey = rawGroupName.replace("_", " ").toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase());
+                    } else if (rawStageName) {
+                        // Group knockouts into clean stage buckets (e.g., Round Of 32, Quarter Finals)
+                        containerKey = rawStageName.replace("_", " ").toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase());
+                        stageLabel = containerKey; 
+                    } else {
+                        return; 
                     }
                     
-                    const groupObj = apiDataStorage[formattedGroupKey];
-                    if (!groupObj.teams.includes(match.homeTeam.name)) groupObj.teams.push(match.homeTeam.name);
-                    if (!groupObj.teams.includes(match.awayTeam.name)) groupObj.teams.push(match.awayTeam.name);
+                    if (!apiDataStorage[containerKey]) {
+                        apiDataStorage[containerKey] = { teams: [], matches: [], probs: {} };
+                    }
+                    
+                    const groupObj = apiDataStorage[containerKey];
+                    if (match.homeTeam && match.homeTeam.name) {
+                        if (!groupObj.teams.includes(match.homeTeam.name)) groupObj.teams.push(match.homeTeam.name);
+                    }
+                    if (match.awayTeam && match.awayTeam.name) {
+                        if (!groupObj.teams.includes(match.awayTeam.name)) groupObj.teams.push(match.awayTeam.name);
+                    }
 
                     let computedScore = "vs";
                     if (match.status === "FINISHED" || match.status === "IN_PLAY" || match.status === "PAUSED") {
@@ -243,13 +258,11 @@
 
                     const matchUtcDate = new Date(match.utcDate);
                     
-                    // Creates an accurate 'YYYY-MM-DD' key based on the viewer's local clock context
                     const localYear = matchUtcDate.getFullYear();
                     const localMonth = String(matchUtcDate.getMonth() + 1).padStart(2, '0');
                     const localDay = String(matchUtcDate.getDate()).padStart(2, '0');
                     const localDateKeyStr = `${localYear}-${localMonth}-${localDay}`;
 
-                    // Standard readable display format string
                     const localizedDisplayTime = matchUtcDate.toLocaleString(undefined, {
                         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', weekday: 'short', hour12: false
                     });
@@ -259,22 +272,18 @@
                     const drawWeight = 20 + (seedSum % 13);
 
                     groupObj.matches.push({
-                        home: match.homeTeam.name,
-                        away: match.awayTeam.name,
+                        home: match.homeTeam?.name || "TBD",
+                        away: match.awayTeam?.name || "TBD",
                         score: computedScore,
                         status: match.status === "FINISHED" ? "FT" : match.status,
                         time: localDateKeyStr, 
                         displayTime: computedScore === "vs" ? localizedDisplayTime : `${localizedDisplayTime} • ${match.status === "FINISHED" ? "Final" : "Live"}`,
                         betDistribution: { home: homeWeight, draw: drawWeight, away: 100 - (homeWeight + drawWeight) },
-                        stageName: "Group Stage",
-                        // Keep raw date handy for our second sorting pass below
+                        stageName: stageLabel,
                         rawDateObject: matchUtcDate 
                     });
                 });
 
-                // =========================================================================
-                // CRITICAL CORRECTION: Force sorting inside each individual group bucket
-                // =========================================================================
                 Object.keys(apiDataStorage).forEach(groupKey => {
                     apiDataStorage[groupKey].matches.sort((a, b) => a.rawDateObject - b.rawDateObject);
                 });
