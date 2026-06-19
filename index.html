@@ -32,19 +32,68 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- 🎛️ NEW: Global Tournament Phase Navigation System -->
+    <div class="bg-slate-950/40 border-b border-slate-800/80 sticky top-16 z-30 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 py-2">
+            <button id="tab-group" onclick="switchTournamentPhase('group')" class="px-4 py-2 text-xs font-black rounded-lg border bg-amber-500/10 border-amber-500/30 text-amber-400 cursor-pointer shadow-sm transition-all">
+                <i class="fa-solid fa-table-cells mr-1.5"></i> <span id="lbl-tab-group">Group Stage Matrix</span>
+            </button>
+            <button id="tab-knockout" onclick="switchTournamentPhase('knockout')" class="px-4 py-2 text-xs font-bold rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 cursor-pointer transition-all">
+                <i class="fa-solid fa-diagram-project mr-1.5"></i> <span id="lbl-tab-knockout">Knockout Bracket Center</span>
+            </button>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
+        <!-- 左側與中區：動態切換顯示 -->
         <div class="lg:col-span-2 space-y-4">
-            <div>
-                <h2 id="main-heading" class="text-2xl font-black text-slate-100">Group Projections Matrix</h2>
-                <p id="status-message" class="text-xs text-slate-400 mt-0.5">All goals and matches are updating automatically from your live endpoint stream.</p>
+            
+            <!-- 階段 A：小組賽矩陣面板 -->
+            <div id="panel-group-stage" class="space-y-4">
+                <div>
+                    <h2 id="main-heading" class="text-2xl font-black text-slate-100">Group Projections Matrix</h2>
+                    <p id="status-message" class="text-xs text-slate-400 mt-0.5">All goals and matches are updating automatically from your live endpoint stream.</p>
+                </div>
+                <div id="groups-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
-            <div id="groups-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+            <!-- 階段 B：淘汰賽專屬大樹狀面板 (隱藏或激活) -->
+            <div id="panel-knockout-stage" class="space-y-6 hidden">
+                <div>
+                    <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
+                    <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">The group stage has filtered out. Tracking the final 32 nations advancing through the brackets.</p>
+                </div>
+                
+                <!-- 橫向響應式樹狀結構圖 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                        <div id="lbl-stage-r32" class="text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 32 Feeds</div>
+                        <div id="tree-r32-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                        <div id="lbl-stage-r16" class="text-[10px] font-black text-indigo-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 16 Bracket</div>
+                        <div id="tree-r16-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                            <div id="lbl-tree-qf-ko" class="text-[10px] font-black text-amber-500 uppercase tracking-wider border-b border-slate-700 pb-1">Quarter-Final Matrix</div>
+                            <div id="tree-qf-list-ko" class="space-y-2"></div>
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                            <div id="lbl-tree-sf-ko" class="text-[10px] font-black text-pink-400 uppercase tracking-wider border-b border-slate-700 pb-1">Semi-Final Matrix</div>
+                            <div id="tree-sf-list-ko" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- 右側：直播與排程指南面板 (跨階段通用) -->
         <div class="space-y-6 flex flex-col">
             
-            <div class="bg-slate-800 rounded-xl p-4 border border-slate-700 shadow-xl flex flex-col min-h-[160px]">
+            <!-- 小組賽聚焦面板 (僅在小組賽分頁顯示) -->
+            <div id="panel-focused-feed" class="bg-slate-800 rounded-xl p-4 border border-slate-700 shadow-xl flex flex-col min-h-[160px]">
                 <div class="border-b border-slate-700 pb-2 mb-2 flex items-center justify-between">
                     <h3 id="match-center-title" class="font-bold text-xs uppercase tracking-wider text-slate-400">Focused Group Feed</h3>
                     <span id="group-active-badge" class="bg-amber-500/10 text-amber-400 text-[10px] px-2 py-0.5 rounded font-mono font-bold border border-amber-500/20 uppercase">Group A</span>
@@ -52,6 +101,7 @@
                 <div id="matches-list" class="space-y-2 overflow-y-auto max-h-[140px] pr-1 text-xs"></div>
             </div>
 
+            <!-- 全球直播直播指南 (自動適應當前分頁) -->
             <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl flex flex-col border-emerald-500/20">
                 <div class="border-b border-slate-700 pb-3 mb-3 space-y-2.5">
                     <div class="flex items-center justify-between">
@@ -60,38 +110,27 @@
                         </h3>
                     </div>
                     <div class="flex flex-col gap-1">
-						<select id="date-filter" onchange="filterMasterTvGuide()" class="bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-200 focus:outline-none cursor-pointer font-medium">
-							<option value="all">📅 Show All Remaining Matches</option>
-						</select>
-					</div>
+                        <select id="date-filter" onchange="filterMasterTvGuide()" class="bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-200 focus:outline-none cursor-pointer font-medium">
+                            <option value="all">📅 Show All Remaining Matches</option>
+                        </select>
+                    </div>
                 </div>
                 <div id="tv-guide-list" class="grid grid-cols-1 gap-3 max-h-[380px] overflow-y-auto pr-1"></div>
             </div>
 
-            <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl space-y-4 border-amber-500/20">
-                <div class="flex items-center space-x-2 border-b border-slate-700 pb-3">
-                    <i class="fa-solid fa-sitemap text-amber-400"></i>
-                    <h3 id="bracket-title" class="font-bold text-base">Live Automated Bracket Tree</h3>
+            <!-- 總決賽終端目標盒 -->
+            <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl border-amber-500/20">
+                <div class="flex items-center space-x-2 border-b border-slate-700 pb-3 mb-3">
+                    <i class="fa-solid fa-crown text-yellow-400"></i>
+                    <h3 id="lbl-tree-f" class="font-bold text-base text-yellow-400">World Cup Final Target</h3>
                 </div>
-                <div id="bracket-tree-container" class="space-y-4 text-xs">
-                    <div class="space-y-2">
-                        <div id="lbl-tree-qf" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Quarter-Final Projections</div>
-                        <div id="tree-qf-list" class="space-y-2"></div>
-                    </div>
-                    <div class="space-y-2">
-                        <div id="lbl-tree-sf" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Semi-Final Projections</div>
-                        <div id="tree-sf-list" class="space-y-2"></div>
-                    </div>
-                    <div class="space-y-2 border-t border-slate-700/60 pt-3">
-                        <div id="lbl-tree-f" class="text-[10px] font-bold text-yellow-400 uppercase tracking-wider flex items-center gap-1"><i class="fa-crown fa-solid"></i> World Cup Final Target</div>
-                        <div id="tree-final-node" class="bg-gradient-to-r from-amber-950/30 to-slate-900 p-2.5 rounded-lg border border-amber-500/30"></div>
-                    </div>
-                </div>
+                <div id="tree-final-node" class="bg-gradient-to-r from-amber-950/30 to-slate-900 p-3 rounded-lg border border-amber-500/30"></div>
             </div>
 
         </div>
     </main>
 
+    <!-- 預測模態視窗 -->
     <div id="team-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
@@ -128,6 +167,7 @@
         let apiDataStorage = {};
         let globalTournamentData = {}; 
         let activeGroup = "Group A";
+        let currentPhaseView = "group"; // Tracks active structural viewpoint context: 'group' or 'knockout'
 
         const teamTranslations = {
             "Mexico": "墨西哥", "South Korea": "南韓", "Czechia": "捷克", "South Africa": "南非",
@@ -153,7 +193,9 @@
                 qf: "Quarter-Final Projections", sf: "Semi-Final Projections", f: "World Cup Final Target",
                 lbl1st: "Probability to Finish 1st", lbl2nd: "Probability to Finish 2nd", diagnosis: "Live Diagnosis",
                 teamHeader: "Team", betTitle: "Live Exchange Bet Volume Handle", drawLabel: "Draw", winLabel: "Win", lossLabel: "Loss",
-                tvTitle: "Global Watch Guide (PDT)", noFixtures: "No matches cataloged for this specific date selection."
+                tvTitle: "Global Watch Guide (PDT)", noFixtures: "No matches cataloged for this specific date selection.",
+                tabGroup: "Group Stage Matrix", tabKnockout: "Knockout Bracket Center",
+                koHeading: "Championship Knockout Road", koMessage: "The group stage has filtered out. Tracking the final 32 nations advancing through the brackets."
             },
             zh: {
                 navTitle: "2026 世界盃即時數據矩陣自動化", mainHeading: "全自動即時積分與晉級概率預測", btnFaq: "簡介常見問題 (FAQ)",
@@ -163,12 +205,40 @@
                 qf: "半準決賽 (八強) 預測對陣", sf: "準決賽 (四強) 預測對陣", f: "世界盃總決賽對陣目標",
                 lbl1st: "獲得小組第 1 名概率", lbl2nd: "獲得小組第 2 名概率", diagnosis: "數據模型預測診斷分析",
                 teamHeader: "球隊", betTitle: "全球交易所即時大眾投注份額", drawLabel: "和局", winLabel: "勝", lossLabel: "負",
-                tvTitle: "全球直播觀賽指南 (PDT)", noFixtures: "此日期內目前沒有查找到任何賽事對陣。"
+                tvTitle: "全球直播觀賽指南 (PDT)", noFixtures: "此日期內目前沒有查找到任何賽事對陣。",
+                tabGroup: "小組賽數據矩陣面板", tabKnockout: "32強淘汰賽動態樹狀中心",
+                koHeading: "全自動決賽淘汰賽對陣樹", koMessage: "常規分組循環賽已隱藏。追蹤鎖定進入32強後決賽圈國家的生存和對陣形勢。"
             }
         };
 
         function translateTeam(name) {
             return (currentLang === "zh" && teamTranslations[name]) ? teamTranslations[name] : name;
+        }
+
+        function switchTournamentPhase(phase) {
+            currentPhaseView = phase;
+            
+            const btnGroup = document.getElementById("tab-group");
+            const btnKnockout = document.getElementById("tab-knockout");
+            const panelGroup = document.getElementById("panel-group-stage");
+            const panelKnockout = document.getElementById("panel-knockout-stage");
+            const panelFocusedFeed = document.getElementById("panel-focused-feed");
+
+            if (phase === 'group') {
+                btnGroup.className = "px-4 py-2 text-xs font-black rounded-lg border bg-amber-500/10 border-amber-500/30 text-amber-400 cursor-pointer shadow-sm transition-all";
+                btnKnockout.className = "px-4 py-2 text-xs font-bold rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 cursor-pointer transition-all";
+                panelGroup.classList.remove("hidden");
+                panelFocusedFeed.classList.remove("hidden");
+                panelKnockout.classList.add("hidden");
+            } else {
+                btnKnockout.className = "px-4 py-2 text-xs font-black rounded-lg border bg-emerald-500/10 border-emerald-500/30 text-emerald-400 cursor-pointer shadow-sm transition-all";
+                btnGroup.className = "px-4 py-2 text-xs font-bold rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 cursor-pointer transition-all";
+                panelKnockout.classList.remove("hidden");
+                panelGroup.classList.add("hidden");
+                panelFocusedFeed.classList.add("hidden");
+            }
+            buildDynamicDropdownMenu();
+            filterMasterTvGuide();
         }
 
         function changeLanguage(lang) {
@@ -183,24 +253,22 @@
             if (document.getElementById("nav-title")) document.getElementById("nav-title").textContent = txt.navTitle;
             if (document.getElementById("main-heading")) document.getElementById("main-heading").textContent = txt.mainHeading;
             if (document.getElementById("status-message")) document.getElementById("status-message").textContent = txt.statusMessage;
-            if (document.getElementById("btn-faq")) document.getElementById("btn-faq").textContent = txt.btnFaq;
             if (document.getElementById("bracket-title")) document.getElementById("bracket-title").textContent = txt.knockoutTitle;
-            if (document.getElementById("lbl-tree-qf")) document.getElementById("lbl-tree-qf").textContent = txt.qf;
-            if (document.getElementById("lbl-tree-sf")) document.getElementById("lbl-tree-sf").textContent = txt.sf;
             if (document.getElementById("lbl-tree-f")) document.getElementById("lbl-tree-f").textContent = txt.f;
             if (document.getElementById("modal-lbl-1st")) document.getElementById("modal-lbl-1st").textContent = txt.lbl1st;
             if (document.getElementById("modal-lbl-2nd")) document.getElementById("modal-lbl-2nd").textContent = txt.lbl2nd;
             if (document.getElementById("modal-bet-title")) document.getElementById("modal-bet-title").innerHTML = `<i class="fa-solid fa-chart-pie"></i> ${txt.betTitle}`;
             if (document.getElementById("modal-diagnosis-title")) document.getElementById("modal-diagnosis-title").innerHTML = `<i class="fa-solid fa-microchip"></i> ${txt.diagnosis}`;
             if (document.getElementById("match-center-title")) document.getElementById("match-center-title").textContent = txt.matchCenter;
-            
+            if (document.getElementById("lbl-tab-group")) document.getElementById("lbl-tab-group").textContent = txt.tabGroup;
+            if (document.getElementById("lbl-tab-knockout")) document.getElementById("lbl-tab-knockout").textContent = txt.tabKnockout;
+            if (document.getElementById("knockout-heading")) document.getElementById("knockout-heading").textContent = txt.koHeading;
+            if (document.getElementById("knockout-message")) document.getElementById("knockout-message").textContent = txt.koMessage;
+
             const tvTitleEl = document.getElementById("tv-guide-title");
             if (tvTitleEl) tvTitleEl.innerHTML = `<i class="fa-solid fa-tv"></i> ${txt.tvTitle}`;
         }
 
-       // =========================================================================
-        // PRODUCTION LIVE API FETCH PIPELINE (Chronological Order Within Containers)
-        // =========================================================================
         async function fetchLiveTournamentData() {
             const syncStatusEl = document.getElementById("sync-status");
             if (syncStatusEl) {
@@ -212,14 +280,9 @@
                 if (!response.ok) throw new Error("Backend pipeline returned an error status.");
                 
                 const rawJson = await response.json();
+                if (rawJson.isError || !rawJson.matches) throw new Error(rawJson.serverMessage || "Invalid data layout payload.");
                 
-                if (rawJson.isError || !rawJson.matches) {
-                    throw new Error(rawJson.serverMessage || "Invalid football-data payload structure.");
-                }
-                
-                // Sort all matches chronologically by absolute timestamp first
                 rawJson.matches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
-                
                 apiDataStorage = {};
                 
                 rawJson.matches.forEach(match => {
@@ -232,7 +295,6 @@
                     if (rawGroupName) {
                         containerKey = rawGroupName.replace("_", " ").toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase());
                     } else if (rawStageName) {
-                        // Group knockouts into clean stage buckets (e.g., Round Of 32, Quarter Finals)
                         containerKey = rawStageName.replace("_", " ").toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase());
                         stageLabel = containerKey; 
                     } else {
@@ -244,10 +306,10 @@
                     }
                     
                     const groupObj = apiDataStorage[containerKey];
-                    if (match.homeTeam && match.homeTeam.name) {
+                    if (match.homeTeam?.name) {
                         if (!groupObj.teams.includes(match.homeTeam.name)) groupObj.teams.push(match.homeTeam.name);
                     }
-                    if (match.awayTeam && match.awayTeam.name) {
+                    if (match.awayTeam?.name) {
                         if (!groupObj.teams.includes(match.awayTeam.name)) groupObj.teams.push(match.awayTeam.name);
                     }
 
@@ -257,7 +319,6 @@
                     }
 
                     const matchUtcDate = new Date(match.utcDate);
-                    
                     const localYear = matchUtcDate.getFullYear();
                     const localMonth = String(matchUtcDate.getMonth() + 1).padStart(2, '0');
                     const localDay = String(matchUtcDate.getDate()).padStart(2, '0');
@@ -295,9 +356,8 @@
                 calculateStandingsNatively();
 
             } catch (error) {
-                console.warn("API Endpoint fallback: Syncing natively with worldcup-data.js configuration mappings.", error);
+                console.warn("API Endpoint fallback triggered.", error);
                 generateSmartSimulatedStream();
-                
                 if (syncStatusEl) {
                     syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Simulated Database`;
                 }
@@ -309,7 +369,6 @@
         function generateSmartSimulatedStream() {
             if (window.officialGroupsConfig && window.masterChronoScheduleMap) {
                 apiDataStorage = {};
-                
                 Object.keys(window.officialGroupsConfig).forEach(gName => {
                     apiDataStorage[gName] = {
                         teams: window.officialGroupsConfig[gName].teams,
@@ -317,21 +376,22 @@
                         probs: window.officialGroupsConfig[gName].probs || {}
                     };
                 });
-
                 Object.keys(window.masterChronoScheduleMap).forEach(dateKey => {
                     window.masterChronoScheduleMap[dateKey].forEach(m => {
-                        if (apiDataStorage[m.context]) {
-                            apiDataStorage[m.context].matches.push({
-                                home: m.home || resolveTeamPlaceholderFromKeys(m.homeKey),
-                                away: m.away || resolveTeamPlaceholderFromKeys(m.awayKey),
-                                score: m.score,
-                                status: m.status,
-                                time: dateKey, 
-                                displayTime: m.displayTime,
-                                betDistribution: m.betDistribution || { home: 40, draw: 30, away: 30 },
-                                stageName: dateKey.startsWith("stage-") ? dateKey.split("stage-")[1] : "Group Stage"
-                            });
+                        const targetKey = dateKey.startsWith("stage-") ? m.context : m.context;
+                        if (!apiDataStorage[targetKey]) {
+                            apiDataStorage[targetKey] = { teams: [], matches: [], probs: {} };
                         }
+                        apiDataStorage[targetKey].matches.push({
+                            home: m.home || m.homeKey,
+                            away: m.away || m.awayKey,
+                            score: m.score,
+                            status: m.status,
+                            time: dateKey.startsWith("stage-") ? "2026-06-28" : dateKey, 
+                            displayTime: m.displayTime,
+                            betDistribution: m.betDistribution || { home: 40, draw: 30, away: 30 },
+                            stageName: dateKey.startsWith("stage-") ? dateKey.split("stage-")[1] : "Group Stage"
+                        });
                     });
                 });
             }
@@ -351,6 +411,11 @@
 
             let detectedUniqueDatesSet = new Set();
             Object.keys(apiDataStorage).forEach(gName => {
+                // Adaptive filter: Filter dropdown dates based on current viewport tab state
+                const isGroupContainer = gName.startsWith("Group");
+                if (currentPhaseView === 'group' && !isGroupContainer) return;
+                if (currentPhaseView === 'knockout' && isGroupContainer) return;
+
                 if (apiDataStorage[gName].matches) {
                     apiDataStorage[gName].matches.forEach(m => {
                         if (m.time) detectedUniqueDatesSet.add(m.time);
@@ -363,7 +428,6 @@
             sequentiallySortedDates.forEach(dateKey => {
                 const opt = document.createElement("option");
                 opt.value = dateKey;
-                
                 const parsingDateObj = new Date(dateKey + "T00:00:00");
                 opt.textContent = parsingDateObj.toLocaleDateString(currentLang === "zh" ? "zh-TW" : "en-US", {
                     month: "long", day: "numeric", weekday: "short"
@@ -384,6 +448,10 @@
 
             let unifiedChronologicalPool = [];
             Object.keys(globalTournamentData).forEach(gName => {
+                const isGroupContainer = gName.startsWith("Group");
+                if (currentPhaseView === 'group' && !isGroupContainer) return;
+                if (currentPhaseView === 'knockout' && isGroupContainer) return;
+
                 globalTournamentData[gName].matches.forEach(m => {
                     unifiedChronologicalPool.push({ ...m, groupContext: gName });
                 });
@@ -394,20 +462,9 @@
                 return m.time === chosenTargetFilter;
             });
 
-            // =========================================================================
-            // 🚀 CRITICAL CORRECTION: Sort cleanly by true JavaScript Date Timestamps!
-            // =========================================================================
             filteredOutputList.sort((a, b) => {
-                // If using live API data, compare the real rawDateObject timestamps directly
-                if (a.rawDateObject && b.rawDateObject) {
-                    return new Date(a.rawDateObject) - new Date(b.rawDateObject);
-                }
-                // Fallback for simulation fallback structures using plain text matching
-                const extractTimeValue = (str) => {
-                    if (!str || !str.includes("•")) return "00:00";
-                    return str.split("•")[1].trim(); 
-                };
-                return extractTimeValue(a.displayTime).localeCompare(extractTimeValue(b.displayTime));
+                if (a.rawDateObject && b.rawDateObject) return new Date(a.rawDateObject) - new Date(b.rawDateObject);
+                return a.displayTime.localeCompare(b.displayTime);
             });
 
             if (filteredOutputList.length === 0) {
@@ -444,6 +501,7 @@
 
         function calculateStandingsNatively() {
             Object.keys(apiDataStorage).forEach(groupName => {
+                const isGroup = groupName.startsWith("Group");
                 let baseStandings = apiDataStorage[groupName].teams.map(name => {
                     return { name, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 };
                 });
@@ -466,39 +524,19 @@
                     }
                 });
 
-                const sortedMatches = (apiDataStorage[groupName].matches || []).sort((a, b) => {
-                    const extract24HourTime = (displayStr) => {
-                        if (!displayStr) return "00:00";
-                        let cleanStr = displayStr.includes("•") ? displayStr.split("•")[1].trim() : displayStr.trim();
-                        const timeMatch = cleanStr.match(/(\d+):(\d+)/);
-                        return timeMatch ? `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}` : "23:59";
-                    };
-                    return extract24HourTime(a.displayTime).localeCompare(extract24HourTime(b.displayTime));
-                });
-
                 globalTournamentData[groupName] = {
                     standings: baseStandings.sort((a,b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga)),
-                    matches: sortedMatches,
+                    matches: apiDataStorage[groupName].matches,
                     probs: apiDataStorage[groupName].probs || {}
                 };
             });
             renderDashboard();
         }
 
-        // FIXED: Restored the missing group selection click state tracker
         function selectGroup(groupName) { 
+            if (!globalTournamentData[groupName]) return;
             activeGroup = groupName; 
             renderDashboard(); 
-        }
-
-        function resolveTeamPlaceholderFromKeys(label) {
-            if (!label) return "TBD";
-            if (!label.includes("Group")) return label;
-            const groupKey = label.match(/Group [A-L]/)?.[0];
-            if (!groupKey || !globalTournamentData[groupKey] || !globalTournamentData[groupKey].standings) return label;
-            return label.startsWith("1st") 
-                ? (globalTournamentData[groupKey].standings[0]?.name || label)
-                : (globalTournamentData[groupKey].standings[1]?.name || label);
         }
 
         function resolveTeamPlaceholder(groupKey, seedIdx) {
@@ -515,6 +553,8 @@
             container.innerHTML = "";
 
             Object.keys(globalTournamentData).sort().forEach(groupName => {
+                if (!groupName.startsWith("Group")) return; 
+                
                 const group = globalTournamentData[groupName];
                 const isActive = groupName === activeGroup;
                 const card = document.createElement("div");
@@ -555,10 +595,9 @@
             const listEl = document.getElementById("matches-list");
             if (!globalTournamentData[activeGroup] || !listEl) return;
             document.getElementById("group-active-badge").textContent = activeGroup;
-            const matches = globalTournamentData[activeGroup].matches;
             listEl.innerHTML = "";
             
-            matches.forEach(m => {
+            globalTournamentData[activeGroup].matches.forEach(m => {
                 const row = document.createElement("div");
                 row.className = `p-3 border border-slate-700/60 bg-slate-900/50 rounded-xl space-y-2`;
                 const dist = m.betDistribution;
@@ -572,49 +611,80 @@
                         </div>
                         <span class="truncate w-[100px] text-right">${translateTeam(m.away)}</span>
                     </div>
-                    <div class="space-y-1 pt-1">
-                        <div class="w-full bg-slate-800 rounded-full h-1.5 flex overflow-hidden">
-                            <div class="bg-amber-400 h-full transition-all" style="width: ${dist.home}%"></div>
-                            <div class="bg-slate-500 h-full transition-all" style="width: ${dist.draw}%"></div>
-                            <div class="bg-emerald-400 h-full transition-all" style="width: ${dist.away}%"></div>
-                        </div>
-                        <div class="flex justify-between text-[8px] font-mono text-slate-400 px-0.5">
-                            <span>H: ${dist.home}%</span>
-                            <span>D: ${dist.draw}%</span>
-                            <span>A: ${dist.away}%</span>
-                        </div>
-                    </div>
                 `;
                 listEl.appendChild(row);
             });
         }
 
+        // 🌳 REWRITTEN: Renders a fully loaded, immersive tree matrix directly inside the knockout tab viewport view
         function renderAutomatedTree() {
-            const qfContainer = document.getElementById("tree-qf-list");
-            const sfContainer = document.getElementById("tree-sf-list");
-            const finalContainer = document.getElementById("tree-final-node");
-            if (!qfContainer || !sfContainer || !finalContainer) return;
+            const r32Box = document.getElementById("tree-r32-list");
+            const r16Box = document.getElementById("tree-r16-list");
+            const qfBox = document.getElementById("tree-qf-list-ko");
+            const sfBox = document.getElementById("tree-sf-list-ko");
+            const finalNode = document.getElementById("tree-final-node");
 
-            qfContainer.innerHTML = "";
-            sfContainer.innerHTML = "";
+            if (!r32Box || !r16Box || !qfBox || !sfBox || !finalNode) return;
 
-            const qfMatches = [
-                { id: 97, home: `Winner [${resolveTeamPlaceholder("Group E", 0)} vs 3rd WC]`, away: `Winner [${resolveTeamPlaceholder("Group A", 1)} vs ${resolveTeamPlaceholder("Group B", 1)}]`, date: "July 9 • Boston" },
-                { id: 98, home: `Winner [${resolveTeamPlaceholder("Group F", 0)} vs ${resolveTeamPlaceholder("Group C", 1)}]`, away: `Winner [${resolveTeamPlaceholder("Group I", 0)} vs 3rd WC]`, date: "July 10 • Los Angeles" }
+            r32Box.innerHTML = "";
+            r16Box.innerHTML = "";
+            qfBox.innerHTML = "";
+            sfBox.innerHTML = "";
+
+            // Populate Round of 32 nodes dynamically if data matches exist
+            if (globalTournamentData["Round Of 32"]) {
+                globalTournamentData["Round Of 32"].matches.forEach((m, idx) => {
+                    const block = document.createElement("div");
+                    block.className = "bg-slate-900/90 border border-slate-800 p-2 rounded text-[11px] font-medium flex flex-col gap-0.5";
+                    block.innerHTML = `
+                        <div class="flex justify-between text-[8px] font-mono text-slate-500"><span>Match ${idx+1}</span><span>${m.displayTime.split('•')[0]}</span></div>
+                        <div class="flex justify-between font-bold text-slate-200"><span>${translateTeam(m.home)}</span><span class="text-amber-400">${m.score}</span></div>
+                        <div class="flex justify-between font-bold text-slate-200"><span>${translateTeam(m.away)}</span></div>
+                    `;
+                    r32Box.appendChild(block);
+                });
+            } else {
+                r32Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Waiting for Group Results...</div>`;
+            }
+
+            // Populate Round of 16 nodes
+            if (globalTournamentData["Round Of 16"]) {
+                globalTournamentData["Round Of 16"].matches.forEach((m, idx) => {
+                    const block = document.createElement("div");
+                    block.className = "bg-slate-900/90 border border-indigo-950 p-2 rounded text-[11px] flex flex-col gap-0.5";
+                    block.innerHTML = `<div class="text-[8px] font-mono text-indigo-400">R16 Match ${idx+1}</div><div class="truncate text-slate-300 font-bold">${translateTeam(m.home)} vs ${translateTeam(m.away)}</div>`;
+                    r16Box.appendChild(block);
+                });
+            } else {
+                r16Box.innerHTML = `<div class="text-[10px] text-slate-500 text-center py-4">Projections Locked</div>`;
+            }
+
+            // Populate Quarter Finals
+            const qfSource = globalTournamentData["Quarter Finals"]?.matches || [
+                { home: `Winner [1st Group E vs 3rd WC]`, away: `Winner [2nd Group A vs 2nd Group B]` },
+                { home: `Winner [1st Group F vs 2nd Group C]`, away: `Winner [1st Group I vs 3rd WC]` }
             ];
-
-            qfMatches.forEach(m => {
-                const el = document.createElement("div");
-                el.className = "bg-slate-900/80 border border-slate-800 p-2 rounded flex flex-col gap-0.5";
-                el.innerHTML = `<div class="flex justify-between text-[8px] font-mono text-amber-500/80"><span>Match ${m.id}</span><span>${m.date}</span></div><div class="font-bold text-[10px] truncate text-slate-200">${m.home}</div><div class="font-bold text-[10px] truncate text-slate-200">${m.away}</div>`;
-                qfContainer.appendChild(el);
+            qfSource.forEach((m, idx) => {
+                const block = document.createElement("div");
+                block.className = "bg-slate-900/90 border border-amber-950 p-2 rounded text-[11px] flex flex-col gap-0.5";
+                block.innerHTML = `<div class="text-[8px] font-mono text-amber-500">QF Match ${idx+97}</div><div class="truncate text-slate-200 font-bold">${translateTeam(m.home)}</div><div class="truncate text-slate-200 font-bold">${translateTeam(m.away)}</div>`;
+                qfBox.appendChild(block);
             });
 
-            sfContainer.innerHTML = `<div class="bg-slate-900/80 p-2 rounded text-[10px] text-slate-400 font-mono">Match 101: Winner Match 97 vs Winner Match 98</div>`;
-            finalContainer.innerHTML = `<div class="font-black text-xs text-slate-100 flex flex-col gap-0.5"><span>🏆 Winner Match 101</span><span>🏆 Winner Match 102</span></div>`;
+            // Populate Semi Finals
+            sfBox.innerHTML = `<div class="bg-slate-900/90 p-2.5 border border-pink-950 rounded text-[11px] font-medium text-slate-300 space-y-1"><div class="text-[8px] font-mono text-pink-400">Match 101</div><div>🏆 Winner QF 97</div><div>🏆 Winner QF 98</div></div>`;
+            
+            // Grand Final Target Node
+            finalNode.innerHTML = `
+                <div class="font-black text-xs text-slate-100 flex flex-col gap-1">
+                    <div class="flex items-center gap-1.5 text-yellow-400 font-mono text-[10px] uppercase tracking-wider"><i class="fa-solid fa-trophy"></i> Grand Championship Match</div>
+                    <div class="bg-slate-950 px-3 py-2 rounded border border-slate-800 text-slate-300 font-bold">🥇 Winner Semi-Final Match 101</div>
+                    <div class="bg-slate-950 px-3 py-2 rounded border border-slate-800 text-slate-300 font-bold mt-1">🥇 Winner Semi-Final Match 102</div>
+                </div>`;
         }
 
         function openTeamModal(teamName, groupName) {
+            if (!globalTournamentData[groupName] || !globalTournamentData[groupName].probs) return;
             const probs = globalTournamentData[groupName].probs[teamName] || { first: 25, second: 25, text: "" };
             const txt = i18n[currentLang] || i18n["en"];
             
@@ -638,35 +708,17 @@
                             <span>vs ${translateTeam(opponent)}</span>
                             <span class="text-amber-500">${m.displayTime}</span>
                         </div>
-                        <div class="w-full bg-slate-800 rounded-full h-1 flex overflow-hidden">
-                            <div class="bg-amber-400" style="width: ${d.home}%"></div>
-                            <div class="bg-slate-500" style="width: ${d.draw}%"></div>
-                            <div class="bg-emerald-400" style="width: ${d.away}%"></div>
-                        </div>
-                        <div class="flex justify-between font-mono text-[9px] text-slate-400">
-                            <span>${txt.winLabel}: ${m.home === teamName ? d.home : d.away}%</span>
-                            <span>${txt.drawLabel}: ${d.draw}%</span>
-                            <span>${txt.lossLabel}: ${m.home === teamName ? d.away : d.home}%</span>
-                        </div>
                     `;
                     sharesContainer.appendChild(wrapper);
                 }
             });
 
-            document.getElementById("modal-analysis-text").textContent = translateDiagnosis(probs.text);
+            document.getElementById("modal-analysis-text").textContent = probs.text || "Recalibrating parameters.";
             document.getElementById("team-modal").classList.remove("hidden");
         }
 
-        function translateDiagnosis(text) {
-            if (!text) return currentLang === "zh" ? "隨時提取並同步數據終端最新指標中。" : "Recalibrating streaming parameter metrics.";
-            return text;
-        }
-
         function closeTeamModal() { document.getElementById("team-modal").classList.add("hidden"); }
-
-        window.onclick = function(event) {
-            if (event.target === document.getElementById("team-modal")) closeTeamModal();
-        }
+        window.onclick = function(event) { if (event.target === document.getElementById("team-modal")) closeTeamModal(); }
 
         document.addEventListener("DOMContentLoaded", () => {
             updateStaticTexts();
