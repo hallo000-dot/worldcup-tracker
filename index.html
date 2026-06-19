@@ -353,10 +353,10 @@
                     syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Live Sync Active`;
                 }
                 
-                // 🚀 THE FIX: Build the menu, trigger the filter instantly for Today, then calculate standings
+                // 🚀 REARRANGED ORDER: Build dropdown, calculate calculations, then slice layout for Today last!
                 buildDynamicDropdownMenu();
-                filterMasterTvGuide(); 
                 calculateStandingsNatively();
+                filterMasterTvGuide(); 
 
             } catch (error) {
                 console.warn("API Endpoint fallback triggered.", error);
@@ -365,10 +365,10 @@
                     syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Simulated Database`;
                 }
                 
-                // Do the same for the backup simulation stream loop path
+                // Mirror the exact same chronological execution order on the backup simulation track
                 buildDynamicDropdownMenu();
-                filterMasterTvGuide();
                 calculateStandingsNatively();
+                filterMasterTvGuide();
             }
         }
 
