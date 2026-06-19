@@ -385,7 +385,15 @@
                 return m.time === chosenTargetFilter;
             });
 
+            // =========================================================================
+            // 🚀 CRITICAL CORRECTION: Sort cleanly by true JavaScript Date Timestamps!
+            // =========================================================================
             filteredOutputList.sort((a, b) => {
+                // If using live API data, compare the real rawDateObject timestamps directly
+                if (a.rawDateObject && b.rawDateObject) {
+                    return new Date(a.rawDateObject) - new Date(b.rawDateObject);
+                }
+                // Fallback for simulation fallback structures using plain text matching
                 const extractTimeValue = (str) => {
                     if (!str || !str.includes("•")) return "00:00";
                     return str.split("•")[1].trim(); 
