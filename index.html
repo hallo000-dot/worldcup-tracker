@@ -648,7 +648,18 @@
                 container.appendChild(card);
             });
             
-            updateFocusedGroupPanel();
+            // =========================================================================
+            // 🚨 SAFETY CHECK: Prevent background updates from resetting your popup views
+            // =========================================================================
+            const isGroupModalOpen = !document.getElementById("group-feed-modal").classList.contains("hidden");
+            const isTeamModalOpen = !document.getElementById("team-modal").classList.contains("hidden");
+            
+            // Only rebuild the inner list elements if you aren't currently reading a modal popup
+            if (!isGroupModalOpen && !isTeamModalOpen) {
+                updateFocusedGroupPanel();
+            }
+            
+            // Always keep the knockout bracket calculations rendering safely in the background
             renderAutomatedTree();
         }
 
