@@ -63,46 +63,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <div class="lg:col-span-2 space-y-4">
-            
-            <div id="panel-group-stage" class="space-y-4">
-                <div>
-                    <h2 id="main-heading" class="text-2xl font-black text-slate-100">Group Projections Matrix</h2>
-                    <p id="status-message" class="text-xs text-slate-400 mt-0.5">All goals and matches are updating automatically from your live endpoint stream.</p>
-                </div>
-                <div id="groups-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="panel-knockout-stage" class="space-y-6 hidden">
-                <div>
-                    <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
-                    <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">The group stage has filtered out. Tracking the final 32 nations advancing through the brackets.</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                        <div id="lbl-stage-r32" class="text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 32 Feeds</div>
-                        <div id="tree-r32-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
-                    </div>
-                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                        <div id="lbl-stage-r16" class="text-[10px] font-black text-indigo-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 16 Bracket</div>
-                        <div id="tree-r16-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                            <div id="lbl-tree-qf-ko" class="text-[10px] font-black text-amber-500 uppercase tracking-wider border-b border-slate-700 pb-1">Quarter-Final Matrix</div>
-                            <div id="tree-qf-list-ko" class="space-y-2"></div>
-                        </div>
-                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
-                            <div id="lbl-tree-sf-ko" class="text-[10px] font-black text-pink-400 uppercase tracking-wider border-b border-slate-700 pb-1">Semi-Final Matrix</div>
-                            <div id="tree-sf-list-ko" class="space-y-2"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="space-y-6 flex flex-col">
+        <div class="space-y-6 flex flex-col order-1 lg:order-2">
             
             <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl flex flex-col border-emerald-500/20">
                 <div class="border-b border-slate-700 pb-3 mb-3 space-y-2.5">
@@ -130,7 +91,43 @@
                 </div>
                 <div id="tree-final-node" class="bg-gradient-to-r from-amber-950/30 to-slate-900 p-3 rounded-lg border border-amber-500/30"></div>
             </div>
+        </div>
 
+        <div class="lg:col-span-2 space-y-4 order-2 lg:order-1">
+            <div id="panel-group-stage" class="space-y-4">
+                <div>
+                    <h2 id="main-heading" class="text-2xl font-black text-slate-100">Group Projections Matrix</h2>
+                    <p id="status-message" class="text-xs text-slate-400 mt-0.5">All goals and matches are updating automatically from your live endpoint stream.</p>
+                </div>
+                <div id="groups-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="panel-knockout-stage" class="space-y-6 hidden">
+                <div>
+                    <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
+                    <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">The group stage has filtered out. Tracking the final 32 nations advancing through the brackets.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                        <div id="lbl-stage-r32" class="text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 32 Feeds</div>
+                        <div id="tree-r32-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                        <div id="lbl-stage-r16" class="text-[10px] font-black text-indigo-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 16 Bracket</div>
+                        <div id="tree-r16-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                            <div id="lbl-tree-qf-ko" class="text-[10px] font-black text-amber-500 uppercase tracking-wider border-b border-slate-700 pb-1">Quarter-Final Matrix</div>
+                            <div id="tree-qf-list-ko" class="space-y-2"></div>
+                        </div>
+                        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
+                            <div id="lbl-tree-sf-ko" class="text-[10px] font-black text-pink-400 uppercase tracking-wider border-b border-slate-700 pb-1">Semi-Final Matrix</div>
+                            <div id="tree-sf-list-ko" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -256,6 +253,38 @@
                     <span class="lang-en">Close FAQ</span>
                     <span class="lang-zh hidden">關閉窗口</span>
                 </button>
+            </div>
+        </div>
+    </div>
+	
+	<div id="match-preview-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-sm font-black uppercase text-slate-100 tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-gamepad text-amber-400"></i> Match Analytics Deep-Dive
+                </h3>
+                <button onclick="closeMatchPreviewModal()" class="text-slate-400 hover:text-slate-100 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <div class="text-center w-[45%] font-black text-sm text-slate-100" id="preview-home-name"></div>
+                    <div class="text-center font-mono font-black text-xs text-amber-400 bg-slate-900 px-3 py-1 rounded" id="preview-match-score">VS</div>
+                    <div class="text-center w-[45%] font-black text-sm text-slate-100" id="preview-away-name"></div>
+                </div>
+
+                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                    <div class="text-[10px] font-bold uppercase text-slate-400 flex items-center gap-1"><i class="fa-solid fa-chart-pie"></i> Combined Public Handle Distribution</div>
+                    <div class="w-full bg-slate-800 rounded-full h-2 flex overflow-hidden shadow-inner" id="preview-slider-bar"></div>
+                    <div class="flex justify-between text-[9px] font-mono text-slate-400" id="preview-vol-labels"></div>
+                </div>
+
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2">
+                    <div class="text-xs font-black uppercase text-amber-400 flex items-center justify-between border-b border-slate-800 pb-1.5">
+                        <span><i class="fa-solid fa-robot"></i> Quant Predictive Strategy Report</span>
+                    </div>
+                    <p id="match-ai-analysis-text" class="text-xs text-slate-300 leading-relaxed"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -709,27 +738,45 @@
                 return;
             }
 
-            filteredOutputList.forEach(m => {
+            filteredOutputList.forEach((m, index) => {
                 const cardItem = document.createElement("div");
-                cardItem.className = "bg-slate-900/90 border border-slate-800 p-3 rounded-lg flex flex-col justify-between shadow-md transition-all hover:border-slate-700";
-                const isFinishedGame = m.status === "FT" || m.status === "FINISHED";
+                // Added pointer interaction formatting
+                cardItem.className = "bg-slate-900/90 border border-slate-800 p-3 rounded-lg flex flex-col justify-between shadow-md transition-all hover:border-amber-500/50 cursor-pointer";
+                
+                // 🚀 NEW INTERACTIVE CLICK EVENT TO LAUNCH MATCH AI PREVIEW MODAL
+                cardItem.setAttribute("onclick", `openMatchPreviewModal(${JSON.stringify(m).replace(/"/g, '&quot;')})`);
+                
+                const isLive = m.status === "IN_PLAY" || m.status === "PAUSED" || m.displayTime.includes("Live");
+                const isFinished = m.status === "FT" || m.status === "FINISHED" || m.displayTime.includes("Final");
+
+                let badgeColorStyle = "bg-slate-800 text-slate-400 border-slate-700";
+                if (isLive) badgeColorStyle = "bg-rose-500/10 text-rose-400 border-rose-500/20 animate-pulse font-black";
+                if (isFinished) badgeColorStyle = "bg-slate-950 text-slate-500 border-slate-900";
 
                 cardItem.innerHTML = `
-                    <div class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 font-mono flex justify-between border-b border-slate-800 pb-1.5 mb-2">
-                        <span>${m.groupContext} • ${m.stageName}</span>
-                        <span class="${isFinishedGame ? 'text-slate-400':'text-emerald-400'}">
-                            <i class="fa-regular fa-clock text-[8px]"></i> ${m.displayTime}
+                    <div class="text-[9px] uppercase tracking-wider font-extrabold font-mono flex justify-between items-center border-b border-slate-800 pb-1.5 mb-2">
+                        <span class="text-slate-400">${m.groupContext} • ${m.stageName}</span>
+                        <span class="px-1.5 py-0.5 rounded border text-[8px] ${badgeColorStyle}">
+                            ${isLive ? '🔴 LIVE' : isFinished ? '🏁 FT' : '⏳ UPCOMING'}
                         </span>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 items-center">
-                        <div class="flex items-center space-x-2 truncate">
-                            <i class="fa-solid fa-flag text-amber-500 text-xs"></i>
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center space-x-1.5 truncate w-[40%]">
+                            <i class="fa-solid fa-square text-[6px] text-amber-500"></i>
                             <span class="text-xs font-bold text-slate-100 truncate">${translateTeam(m.home)}</span>
                         </div>
-                        <div class="flex items-center space-x-2 truncate justify-end">
-                            <span class="text-xs font-bold text-slate-100 truncate text-right">${translateTeam(m.away)}</span>
-                            <i class="fa-solid fa-flag text-emerald-500 text-xs"></i>
+                        
+                        <div class="bg-slate-950 px-2 py-0.5 rounded border border-slate-800 text-[10px] font-mono font-black tracking-wider text-center min-w-[55px] text-amber-400">
+                            ${m.score === "vs" ? "VS" : m.score}
                         </div>
+                        
+                        <div class="flex items-center space-x-1.5 truncate w-[40%] justify-end">
+                            <span class="text-xs font-bold text-slate-100 truncate text-right">${translateTeam(m.away)}</span>
+                            <i class="fa-solid fa-square text-[6px] text-emerald-400"></i>
+                        </div>
+                    </div>
+                    <div class="text-[8px] font-mono font-medium text-slate-500 text-center mt-1.5 pt-1 border-t border-slate-950">
+                        <i class="fa-regular fa-clock text-[8px]"></i> ${m.displayTime}
                     </div>
                 `;
                 listEl.appendChild(cardItem);
@@ -1135,10 +1182,70 @@
             }
         }
 
+        // 🚀 ADVANCED MATCH-SPECIFIC MODEL QUERY CORE ENGINE
+        async function openMatchPreviewModal(matchData) {
+            const homeText = translateTeam(matchData.home);
+            const awayText = translateTeam(matchData.away);
+            
+            document.getElementById("preview-home-name").textContent = homeText;
+            document.getElementById("preview-away-name").textContent = awayText;
+            document.getElementById("preview-match-score").textContent = matchData.score;
+            
+            const dist = matchData.betDistribution || { home: 40, draw: 30, away: 30 };
+            const barContainer = document.getElementById("preview-slider-bar");
+            const labelContainer = document.getElementById("preview-vol-labels");
+            
+            barContainer.innerHTML = `
+                <div class="bg-amber-400 h-full" style="width: ${dist.home}%"></div>
+                <div class="bg-slate-500 h-full" style="width: ${dist.draw}%"></div>
+                <div class="bg-emerald-400 h-full" style="width: ${dist.away}%"></div>
+            `;
+            
+            labelContainer.innerHTML = `
+                <span class="text-amber-400">Home: ${dist.home}%</span>
+                <span>Draw: ${dist.draw}%</span>
+                <span class="text-emerald-400">Away: ${dist.away}%</span>
+            `;
+            
+            const aiTextBox = document.getElementById("match-ai-analysis-text");
+            aiTextBox.innerHTML = `<span class="text-slate-500 italic animate-pulse"><i class="fa-solid fa-brain text-amber-400 mr-1"></i> Running real-time scenario evaluations...</span>`;
+            
+            document.getElementById("match-preview-modal").classList.remove("hidden");
+            
+            try {
+                const promptString = `You are an elite football analytics model reviewing a match between ${matchData.home} and ${matchData.away} in ${matchData.groupContext}.
+                Match Status: ${matchData.status}, Current/Final Score: ${matchData.score}.
+                Global Retail Exchange Volatility handles: Home Win backings=${dist.home}%, Draws=${dist.draw}%, Away Win backings=${dist.away}%.
+                
+                Provide an intensive 3-sentence calculated strategic analysis in ${currentLang === 'zh' ? 'Traditional Chinese (繁體中文)' : 'English'}. Include:
+                1. Based on market volume percentages, who is the predicted tactical favorite.
+                2. Motivation parameters: which nation needs the win more or has a harsher qualification checklist to crack the top 2.
+                3. Analytical scenario check: Evaluate potential tactical trends or collusive target positions (e.g., strategic draw dynamics or attempts to avoid harsher routes in the upcoming Round of 32 knockout bracket matches). Be direct, brilliant, and data-focused.`;
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptString }] }] })
+                });
+
+                const jsonOut = await response.json();
+                aiTextBox.textContent = jsonOut.candidates[0].content.parts[0].text.trim();
+            } catch (err) {
+                console.error("Match context stream interrupt:", err);
+                aiTextBox.textContent = currentLang === "zh" ? "無法取得即時分析報告，請確認網路或 API 額度。" : "Scenario diagnostic streams experienced a terminal connection reset.";
+            }
+        }
+
+        function closeMatchPreviewModal() { 
+            document.getElementById("match-preview-modal").classList.add("hidden"); 
+        }
+
+        // 🎛️ GLOBAL WINDOW CLICK MUTATION OBSERVER LAYER
         window.onclick = function(event) { 
             if (event.target === document.getElementById("team-modal")) closeTeamModal(); 
             if (event.target === document.getElementById("group-feed-modal")) closeGroupFeedModal();
-            if (event.target === document.getElementById("faq-modal")) closeFaqModal(); // 🚀 Wire up FAQ layer
+            if (event.target === document.getElementById("faq-modal")) closeFaqModal();
+            if (event.target === document.getElementById("match-preview-modal")) closeMatchPreviewModal(); // 🚀 Wires up the Match Preview Closer
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -1146,6 +1253,7 @@
             fetchLiveTournamentData();
             setInterval(fetchLiveTournamentData, 60000); 
         });
+		
     </script>
 </body>
 </html>
