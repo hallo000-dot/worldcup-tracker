@@ -178,6 +178,9 @@
         // 🔑 THE ODDS API REAL-TIME PROBABILITY CONSENSUS INTEGRATION
         const THE_ODDS_API_KEY = "bbc112645c0e2a458996e3fed8af288c"; // <-- Put your free registration key here
 
+        // 🧠 GOOGLE AI STUDIO: FREE LIVE REASONING ENGINE 
+        const GEMINI_API_KEY = "AQ.Ab8RN6IcS2OOQQlZEd9d18R1gHiiFCYNZZXERAEs3ZHNWLnGOQ"; // <-- Put your Gemini key here!
+
         const teamTranslations = {
             "Mexico": "墨西哥", "South Korea": "南韓", "Czechia": "捷克", "South Africa": "南非",
             "Canada": "加拿大", "Switzerland": "瑞士", "Bosnia & Herz.": "波士尼亞", "Qatar": "卡達",
@@ -884,48 +887,39 @@
                 </div>`;
         }
 
-        function openTeamModal(teamName, groupName) {
-            if (!globalTournamentData[groupName] || !globalTournamentData[groupName].probs) return;
-            const probs = globalTournamentData[groupName].probs[teamName] || { first: 25, second: 25, text: "" };
+        async function openTeamModal(teamName, groupName) {
+            if (!globalTournamentData[groupName]) return;
             const txt = i18n[currentLang] || i18n["en"];
             
-            let probFirst = 25;
-            let probSecond = 25;
-            let diagnosisText = "";
-
             const teamData = globalTournamentData[groupName].standings.find(t => t.name === teamName);
-            if (teamData) {
-                const performanceScore = (teamData.pts * 3) + (teamData.gf - teamData.ga);
-                if (teamData.p === 0) {
-                    probFirst = 25; probSecond = 25;
-                    diagnosisText = currentLang === "zh" ? "賽事尚未開打。根據初始排位，小組形勢處於均勢狀態。" : "Fixtures pending kickoff. Group dynamics hold an even baseline projection.";
-                } else {
-                    probFirst = Math.min(Math.max(25 + (performanceScore * 4), 5), 95);
-                    probSecond = Math.min(Math.max(25 + (performanceScore * 2), 5), 85);
-                    
-                    if (teamData.pts >= 6) {
-                        diagnosisText = currentLang === "zh" ? "該國展現強大統治力，模型預測其有極高機率鎖定淘汰賽出線席位。" : "Dominant run-form detected. Predictive metrics indicate a near-certain qualification lock.";
-                    } else if (teamData.pts === 0 && teamData.p >= 2) {
-                        probFirst = 0; probSecond = 2;
-                        diagnosisText = currentLang === "zh" ? "出線形勢極度嚴峻，基本失去爭奪小組前兩名的主動權。" : "Severe mathematical deficit. Hopes for a top-two qualification finish are drastically low.";
-                    } else {
-                        diagnosisText = currentLang === "zh" ? "小組內積分咬得很緊，未來關鍵對陣將直接決定出線命運。" : "Tight points cluster. Upcoming head-to-head fixtures will dictate matrix sorting outcomes.";
-                    }
-                }
-            }
-            
+            if (!teamData) return;
+
+            // 1. Instantly render the title and progress bars using your native engine
             document.getElementById("modal-header-title").textContent = `${translateTeam(teamName)}`;
+            
+            const performanceScore = (teamData.pts * 3) + (teamData.gf - teamData.ga);
+            let probFirst = Math.min(Math.max(25 + (performanceScore * 4), 5), 95);
+            let probSecond = Math.min(Math.max(25 + (performanceScore * 2), 5), 85);
+            if (teamData.pts === 0 && teamData.p >= 2) { probFirst = 0; probSecond = 2; }
+
             document.getElementById("modal-prob-1st").textContent = `${Math.round(probFirst)}%`;
             document.getElementById("modal-bar-1st").style.width = `${Math.round(probFirst)}%`;
             document.getElementById("modal-prob-2nd").textContent = `${Math.round(probSecond)}%`;
             document.getElementById("modal-bar-2nd").style.width = `${Math.round(probSecond)}%`;
-            
+
+            // 2. Clear out old text and show a clean loading indicator inside the box
+            const diagnosisBox = document.getElementById("modal-analysis-text");
+            diagnosisBox.innerHTML = `<span class="text-slate-500 italic animate-pulse"><i class="fa-solid fa-brain mr-1.5 text-amber-400"></i> AI Analyst is reviewing group math...</span>`;
+
+            // 3. Render your live betting volume list row boxes
             const sharesContainer = document.getElementById("modal-bet-shares-container");
             sharesContainer.innerHTML = "";
-            
+            let upcomingFixturesContext = [];
+
             globalTournamentData[groupName].matches.forEach(m => {
                 if(m.home === teamName || m.away === teamName) {
                     const opponent = m.home === teamName ? m.away : m.home;
+                    upcomingFixturesContext.push(`vs ${opponent} (Status: ${m.status}, Score: ${m.score})`);
                     const dist = m.betDistribution || { home: 40, draw: 30, away: 30 };
                     
                     const wrapper = document.createElement("div");
@@ -940,18 +934,34 @@
                             <div class="bg-slate-500" style="width: ${dist.draw}%"></div>
                             <div class="bg-emerald-400" style="width: ${dist.away}%"></div>
                         </div>
-                        <div class="flex justify-between font-mono text-[9px] text-slate-400">
-                            <span>${txt.winLabel}: ${m.home === teamName ? dist.home : dist.away}%</span>
-                            <span>${txt.drawLabel}: ${dist.draw}%</span>
-                            <span>${txt.lossLabel}: ${m.home === teamName ? dist.away : dist.home}%</span>
-                        </div>
                     `;
                     sharesContainer.appendChild(wrapper);
                 }
             });
 
-            document.getElementById("modal-analysis-text").textContent = diagnosisText;
             document.getElementById("team-modal").classList.remove("hidden");
+
+            // 4. ASYNC AI EXECUTION: Pass current stats to Gemini for real sports reasoning
+            try {
+                const aiPrompt = `You are a professional football analytics engine. Analyze ${teamName} in ${groupName}. 
+                Current stats: Matches Played=${teamData.p}, Points=${teamData.pts}, Goal Difference=${teamData.gf - teamData.ga}.
+                Schedule/Results: ${upcomingFixturesContext.join(" | ")}.
+                Write a brilliant, ultra-compact 2-sentence tactical breakdown in ${currentLang === 'zh' ? 'Traditional Chinese (繁體中文)' : 'English'}. Explain their precise path or threat to qualification. Be sharp and data-driven.`;
+
+                const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: aiPrompt }] }] })
+                });
+
+                const aiJson = await aiResponse.json();
+                const processedText = aiJson.candidates[0].content.parts[0].text;
+                diagnosisBox.textContent = processedText.trim();
+
+            } catch (err) {
+                console.warn("AI engine line bottleneck:", err);
+                diagnosisBox.textContent = currentLang === "zh" ? "模型分析暫時無法載入，請確認金鑰配額。" : "Analytical diagnostic stream experienced a connection reset.";
+            }
         }
 
         function closeTeamModal() { document.getElementById("team-modal").classList.add("hidden"); }
