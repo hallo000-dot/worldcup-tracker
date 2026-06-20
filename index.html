@@ -32,7 +32,6 @@
         </div>
     </header>
 
-    <!-- 🎛️ Global Tournament Phase Navigation System -->
     <div class="bg-slate-950/40 border-b border-slate-800/80 sticky top-16 z-30 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 py-2">
             <button id="tab-group" onclick="switchTournamentPhase('group')" class="px-4 py-2 text-xs font-black rounded-lg border bg-amber-500/10 border-amber-500/30 text-amber-400 cursor-pointer shadow-sm transition-all">
@@ -46,10 +45,8 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- 左側與中區：動態切換顯示 -->
         <div class="lg:col-span-2 space-y-4">
             
-            <!-- 階段 A：小組賽矩陣面板 -->
             <div id="panel-group-stage" class="space-y-4">
                 <div>
                     <h2 id="main-heading" class="text-2xl font-black text-slate-100">Group Projections Matrix</h2>
@@ -58,14 +55,12 @@
                 <div id="groups-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- 階段 B：淘汰賽專屬大樹狀面板 -->
             <div id="panel-knockout-stage" class="space-y-6 hidden">
                 <div>
                     <h2 id="knockout-heading" class="text-2xl font-black text-emerald-400">Championship Knockout Road</h2>
                     <p id="knockout-message" class="text-xs text-slate-400 mt-0.5">The group stage has filtered out. Tracking the final 32 nations advancing through the brackets.</p>
                 </div>
                 
-                <!-- 橫向響應式樹狀結構圖 -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 space-y-3 shadow-lg">
                         <div id="lbl-stage-r32" class="text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Round of 32 Feeds</div>
@@ -89,10 +84,8 @@
             </div>
         </div>
 
-        <!-- 右側：直播與排程指南面板 (跨階段通用) -->
         <div class="space-y-6 flex flex-col">
             
-            <!-- 全球直播直播指南 (自動適應當前分頁) -->
             <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl flex flex-col border-emerald-500/20">
                 <div class="border-b border-slate-700 pb-3 mb-3 space-y-2.5">
                     <div class="flex items-center justify-between">
@@ -112,7 +105,6 @@
                 <div id="tv-guide-list" class="grid grid-cols-1 gap-3 max-h-[380px] overflow-y-auto pr-1"></div>
             </div>
 
-            <!-- 總決賽終端目標盒 -->
             <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl border-amber-500/20">
                 <div class="flex items-center space-x-2 border-b border-slate-700 pb-3 mb-3">
                     <i class="fa-solid fa-crown text-yellow-400"></i>
@@ -124,7 +116,6 @@
         </div>
     </main>
 
-    <!-- 原有的球隊預測模態視窗 -->
     <div id="team-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
@@ -156,7 +147,6 @@
         </div>
     </div>
 
-    <!-- 🚨 NEW: 全螢幕焦點小組賽程中心彈出視窗 -->
     <div id="group-feed-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
@@ -168,8 +158,7 @@
             </div>
             
             <div id="matches-list" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                <!-- Data injects here dynamically -->
-            </div>
+                </div>
             
             <div class="bg-slate-900/60 px-6 py-3 border-t border-slate-700/60 flex justify-end">
                 <button onclick="closeGroupFeedModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-4 py-2 rounded-lg border border-slate-600 cursor-pointer transition-colors">
@@ -185,6 +174,9 @@
         let globalTournamentData = {}; 
         let activeGroup = "Group A";
         let currentPhaseView = "group"; 
+
+        // 🔑 THE ODDS API REAL-TIME PROBABILITY CONSENSUS INTEGRATION
+        const THE_ODDS_API_KEY = "YOUR_FREE_ODDS_API_KEY_HERE"; // <-- Put your free registration key here
 
         const teamTranslations = {
             "Mexico": "墨西哥", "South Korea": "南韓", "Czechia": "捷克", "South Africa": "南非",
@@ -283,13 +275,58 @@
             if (tvTitleEl) tvTitleEl.innerHTML = `<i class="fa-solid fa-tv"></i> ${txt.tvTitle}`;
         }
 
+        async function fetchLiveBettingMarketOdds() {
+            try {
+                const response = await fetch(`https://api.the-odds-api.com/v4/sports/soccer_fifa_world_cup/odds/?apiKey=${THE_ODDS_API_KEY}&regions=us,eu&markets=h2h&oddsFormat=decimal`);
+                if (!response.ok) return null;
+                
+                const oddsData = await response.json();
+                let marketMetricsMap = {};
+                
+                oddsData.forEach(game => {
+                    const homeTeamStr = game.home_team;
+                    const awayTeamStr = game.away_team;
+                    const compositeKey = `${homeTeamStr}_vs_${awayTeamStr}`;
+                    
+                    const bookmaker = game.bookmakers?.[0];
+                    const market = bookmaker?.markets?.find(m => m.key === "h2h");
+                    
+                    if (market && market.outcomes) {
+                        const homeOdds = parseFloat(market.outcomes.find(o => o.name === homeTeamStr)?.price || 0);
+                        const awayOdds = parseFloat(market.outcomes.find(o => o.name === awayTeamStr)?.price || 0);
+                        const drawOdds = parseFloat(market.outcomes.find(o => o.name === "Draw")?.price || 0);
+                        
+                        if (homeOdds > 0 && drawOdds > 0 && awayOdds > 0) {
+                            const rawHome = 1 / homeOdds;
+                            const rawDraw = 1 / drawOdds;
+                            const rawAway = 1 / awayOdds;
+                            const totalMarginOverround = rawHome + rawDraw + rawAway;
+                            
+                            marketMetricsMap[compositeKey] = {
+                                home: Math.round((rawHome / totalMarginOverround) * 100),
+                                draw: Math.round((rawDraw / totalMarginOverround) * 100),
+                                away: Math.round((rawAway / totalMarginOverround) * 100)
+                            };
+                        }
+                    }
+                });
+                return marketMetricsMap;
+            } catch (err) {
+                console.warn("The Odds API throttled or down. Using baseline fallbacks.", err);
+                return null;
+            }
+        }
+
         async function fetchLiveTournamentData() {
             const syncStatusEl = document.getElementById("sync-status");
             if (syncStatusEl) {
-                syncStatusEl.innerHTML = `<i class="fa-solid fa-arrows-spin animate-spin mr-1"></i> Syncing...`;
+                syncStatusEl.innerHTML = `<i class="fa-solid fa-arrows-spin animate-spin mr-1"></i> Synchronizing streams...`;
             }
             
             try {
+                // Intercept real live odds consensus from the free provider first
+                const liveMarketOddsFeed = await fetchLiveBettingMarketOdds();
+
                 const response = await fetch('https://worldcup-tracker-seven.vercel.app/api/matches');
                 if (!response.ok) throw new Error("Backend pipeline returned an error status.");
                 
@@ -342,9 +379,20 @@
                         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', weekday: 'short', hour12: false
                     });
 
-                    const seedSum = match.id || 7;
-                    const homeWeight = 40 + (seedSum % 23);
-                    const drawWeight = 20 + (seedSum % 13);
+                    // Fusion mapping engine checks
+                    const oddsLookupKey = `${match.homeTeam?.name}_vs_${match.awayTeam?.name}`;
+                    let homeWeight = 40, drawWeight = 30, awayWeight = 30;
+
+                    if (liveMarketOddsFeed && liveMarketOddsFeed[oddsLookupKey]) {
+                        homeWeight = liveMarketOddsFeed[oddsLookupKey].home;
+                        drawWeight = liveMarketOddsFeed[oddsLookupKey].draw;
+                        awayWeight = liveMarketOddsFeed[oddsLookupKey].away;
+                    } else {
+                        const seedSum = match.id || 7;
+                        homeWeight = 40 + (seedSum % 23);
+                        drawWeight = 20 + (seedSum % 13);
+                        awayWeight = 100 - (homeWeight + drawWeight);
+                    }
 
                     groupObj.matches.push({
                         home: match.homeTeam?.name || "TBD",
@@ -353,7 +401,7 @@
                         status: match.status === "FINISHED" ? "FT" : match.status,
                         time: localDateKeyStr, 
                         displayTime: computedScore === "vs" ? localizedDisplayTime : `${localizedDisplayTime} • ${match.status === "FINISHED" ? "Final" : "Live"}`,
-                        betDistribution: { home: homeWeight, draw: drawWeight, away: 100 - (homeWeight + drawWeight) },
+                        betDistribution: { home: homeWeight, draw: drawWeight, away: awayWeight },
                         stageName: stageLabel,
                         rawDateObject: matchUtcDate 
                     });
@@ -364,7 +412,7 @@
                 });
                 
                 if (syncStatusEl) {
-                    syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Live Sync Active`;
+                    syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Dual Streams Connected`;
                 }
                 
                 buildDynamicDropdownMenu();
@@ -511,10 +559,7 @@
 
             filteredOutputList.forEach(m => {
                 const cardItem = document.createElement("div");
-                
-                // 🚀 FIX: Clicking now calls a brand new single-match window handler instead of the team profile
-                cardItem.className = "bg-slate-900/90 border border-slate-800 p-3 rounded-lg flex flex-col justify-between shadow-md transition-all hover:border-emerald-500/60 cursor-pointer hover:bg-slate-800/40";
-                                
+                cardItem.className = "bg-slate-900/90 border border-slate-800 p-3 rounded-lg flex flex-col justify-between shadow-md transition-all hover:border-slate-700";
                 const isFinishedGame = m.status === "FT" || m.status === "FINISHED";
 
                 cardItem.innerHTML = `
@@ -537,6 +582,86 @@
                 `;
                 listEl.appendChild(cardItem);
             });
+        }
+
+        function openFullDayWatchGuideModal() {
+            const chosenTargetFilter = document.getElementById("date-filter").value;
+            const listEl = document.getElementById("matches-list");
+            const badgeEl = document.getElementById("group-active-badge");
+            if (!listEl || !badgeEl) return;
+            
+            const txt = i18n[currentLang] || i18n["en"];
+            
+            if (chosenTargetFilter === "all") {
+                badgeEl.textContent = currentLang === "zh" ? "全季所有賽事" : "All Season Matches";
+            } else {
+                const parsingDateObj = new Date(chosenTargetFilter + "T00:00:00");
+                badgeEl.textContent = parsingDateObj.toLocaleDateString(currentLang === "zh" ? "zh-TW" : "en-US", {
+                    month: "short", day: "numeric", weekday: "short"
+                });
+            }
+            
+            listEl.innerHTML = "";
+
+            let matchingDayGames = [];
+            Object.keys(globalTournamentData).forEach(gName => {
+                globalTournamentData[gName].matches.forEach(m => {
+                    if (chosenTargetFilter === "all" || m.time === chosenTargetFilter) {
+                        matchingDayGames.push({ ...m, groupContext: gName });
+                    }
+                });
+            });
+
+            matchingDayGames.sort((a, b) => {
+                if (a.rawDateObject && b.rawDateObject) return new Date(a.rawDateObject) - new Date(b.rawDateObject);
+                return a.displayTime.localeCompare(b.displayTime);
+            });
+
+            if (matchingDayGames.length === 0) {
+                listEl.innerHTML = `<div class="text-xs text-slate-500 text-center py-6 font-medium">${txt.noFixtures}</div>`;
+                document.getElementById("group-feed-modal").classList.remove("hidden");
+                return;
+            }
+
+            matchingDayGames.forEach(m => {
+                const row = document.createElement("div");
+                row.className = "p-4 border border-slate-700/60 bg-slate-900 rounded-xl space-y-3 shadow-sm mb-2";
+                const dist = m.betDistribution || { home: 40, draw: 30, away: 30 };
+
+                row.innerHTML = `
+                    <div class="text-[9px] uppercase tracking-wider font-extrabold text-slate-500 font-mono flex justify-between border-b border-slate-950 pb-1">
+                        <span>${m.groupContext} • ${m.stageName}</span>
+                    </div>
+                    <div class="flex justify-between items-center font-black text-sm text-slate-100">
+                        <span class="truncate w-[160px] text-left flex items-center gap-1.5">
+                            <i class="fa-solid fa-square text-[8px] text-amber-500"></i> ${translateTeam(m.home)}
+                        </span>
+                        <div class="flex flex-col items-center min-w-[100px] bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800">
+                            <span class="text-amber-400 font-mono text-sm tracking-wider font-black">${m.score}</span>
+                            <span class="text-[9px] text-slate-400 font-mono mt-0.5 uppercase font-medium tracking-wide">${m.displayTime.split('•')[0]}</span>
+                        </div>
+                        <span class="truncate w-[160px] text-right flex items-center justify-end gap-1.5">
+                            ${translateTeam(m.away)} <i class="fa-solid fa-square text-[8px] text-emerald-400"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-1.5 pt-1 border-t border-slate-800/40">
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 flex overflow-hidden">
+                            <div class="bg-amber-400" style="width: ${dist.home}%"></div>
+                            <div class="bg-slate-500" style="width: ${dist.draw}%"></div>
+                            <div class="bg-emerald-400" style="width: ${dist.away}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[9px] font-mono font-bold text-slate-400 px-1">
+                            <span class="text-amber-400">Home Vol: ${dist.home}%</span>
+                            <span class="text-slate-400">Draw Vol: ${dist.draw}%</span>
+                            <span class="text-emerald-400">Away Vol: ${dist.away}%</span>
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(row);
+            });
+
+            document.getElementById("group-feed-modal").classList.remove("hidden");
         }
 
         function calculateStandingsNatively() {
@@ -609,9 +734,7 @@
                 group.standings.forEach((team, idx) => {
                     const gd = team.gf - team.ga;
                     
-                    // =========================================================================
-                    // 🚀 LIVE ODDS CALCULATOR: Mirroring the dynamic pop-up logic perfectly
-                    // =========================================================================
+                    // Live Predictive Probability Mirror Engine
                     let probFirst = 25;
                     let probSecond = 25;
 
@@ -620,7 +743,6 @@
                         probFirst = Math.min(Math.max(25 + (performanceScore * 4), 5), 95);
                         probSecond = Math.min(Math.max(25 + (performanceScore * 2), 5), 85);
                         
-                        // Deficit elimination rule
                         if (team.pts === 0 && team.p >= 2) {
                             probFirst = 0; probSecond = 2;
                         }
@@ -648,18 +770,13 @@
                 container.appendChild(card);
             });
             
-            // =========================================================================
-            // 🚨 SAFETY CHECK: Prevent background updates from resetting your popup views
-            // =========================================================================
+            // Quiet Background Sync Lock Checks
             const isGroupModalOpen = !document.getElementById("group-feed-modal").classList.contains("hidden");
             const isTeamModalOpen = !document.getElementById("team-modal").classList.contains("hidden");
             
-            // Only rebuild the inner list elements if you aren't currently reading a modal popup
             if (!isGroupModalOpen && !isTeamModalOpen) {
                 updateFocusedGroupPanel();
             }
-            
-            // Always keep the knockout bracket calculations rendering safely in the background
             renderAutomatedTree();
         }
 
@@ -667,9 +784,7 @@
             const listEl = document.getElementById("matches-list");
             if (!globalTournamentData[activeGroup] || !listEl) return;
             
-            const badgeEl = document.getElementById("group-active-badge");
-            if (badgeEl) badgeEl.textContent = activeGroup;
-            
+            document.getElementById("group-active-badge").textContent = activeGroup;
             listEl.innerHTML = "";
             
             globalTournamentData[activeGroup].matches.forEach(m => {
@@ -770,26 +885,21 @@
         }
 
         function openTeamModal(teamName, groupName) {
-            if (!globalTournamentData[groupName]) return;
-            const groupObj = globalTournamentData[groupName];
-            const teamData = groupObj.standings.find(t => t.name === teamName);
+            if (!globalTournamentData[groupName] || !globalTournamentData[groupName].probs) return;
+            const probs = globalTournamentData[groupName].probs[teamName] || { first: 25, second: 25, text: "" };
             const txt = i18n[currentLang] || i18n["en"];
             
-            // 1. DYNAMIC PROBABILITY ENGINE: Calculate odds based on actual live standing performance
             let probFirst = 25;
             let probSecond = 25;
             let diagnosisText = "";
 
+            const teamData = globalTournamentData[groupName].standings.find(t => t.name === teamName);
             if (teamData) {
-                // Base formula utilizing accumulated Points and Goal Difference factors
                 const performanceScore = (teamData.pts * 3) + (teamData.gf - teamData.ga);
-                
                 if (teamData.p === 0) {
-                    // Pre-tournament baseline settings
                     probFirst = 25; probSecond = 25;
                     diagnosisText = currentLang === "zh" ? "賽事尚未開打。根據初始排位，小組形勢處於均勢狀態。" : "Fixtures pending kickoff. Group dynamics hold an even baseline projection.";
                 } else {
-                    // Dynamically scale weights based on matches played and performance indices
                     probFirst = Math.min(Math.max(25 + (performanceScore * 4), 5), 95);
                     probSecond = Math.min(Math.max(25 + (performanceScore * 2), 5), 85);
                     
@@ -804,7 +914,6 @@
                 }
             }
             
-            // Render basic percentage metrics onto the bar containers
             document.getElementById("modal-header-title").textContent = `${translateTeam(teamName)}`;
             document.getElementById("modal-prob-1st").textContent = `${Math.round(probFirst)}%`;
             document.getElementById("modal-bar-1st").style.width = `${Math.round(probFirst)}%`;
@@ -814,13 +923,10 @@
             const sharesContainer = document.getElementById("modal-bet-shares-container");
             sharesContainer.innerHTML = "";
             
-            // 2. LIVE INTERCEPT: Build out dynamic betting vol handles using the live matches pool
-            groupObj.matches.forEach(m => {
-                if (m.home === teamName || m.away === teamName) {
+            globalTournamentData[groupName].matches.forEach(m => {
+                if(m.home === teamName || m.away === teamName) {
                     const opponent = m.home === teamName ? m.away : m.home;
-                    
-                    // Fallback generator for live distribution handles
-                    const dist = m.betDistribution || { home: 42, draw: 28, away: 30 };
+                    const dist = m.betDistribution || { home: 40, draw: 30, away: 30 };
                     
                     const wrapper = document.createElement("div");
                     wrapper.className = "bg-slate-950 p-3 rounded-lg border border-slate-800 text-[11px] space-y-2";
@@ -849,87 +955,6 @@
         }
 
         function closeTeamModal() { document.getElementById("team-modal").classList.add("hidden"); }
-
-// 🚀 NEW: Opens the popup displaying ALL matches scheduled for the selected dropdown date together
-        function openFullDayWatchGuideModal() {
-            const chosenTargetFilter = document.getElementById("date-filter").value;
-            const listEl = document.getElementById("matches-list");
-            const badgeEl = document.getElementById("group-active-badge");
-            if (!listEl || !badgeEl) return;
-            
-            const txt = i18n[currentLang] || i18n["en"];
-            
-            // 1. Set up the header text context based on the filter selection
-            if (chosenTargetFilter === "all") {
-                badgeEl.textContent = currentLang === "zh" ? "全季所有賽事" : "All Season Matches";
-            } else {
-                const parsingDateObj = new Date(chosenTargetFilter + "T00:00:00");
-                badgeEl.textContent = parsingDateObj.toLocaleDateString(currentLang === "zh" ? "zh-TW" : "en-US", {
-                    month: "short", day: "numeric", weekday: "short"
-                });
-            }
-            
-            listEl.innerHTML = "";
-
-            // 2. Gather all matching fixtures across all tournament groups
-            let matchingDayGames = [];
-            Object.keys(globalTournamentData).forEach(gName => {
-                globalTournamentData[gName].matches.forEach(m => {
-                    if (chosenTargetFilter === "all" || m.time === chosenTargetFilter) {
-                        matchingDayGames.push({ ...m, groupContext: gName });
-                    }
-                });
-            });
-
-            // Chronological layout sorting
-            matchingDayGames.sort((a, b) => {
-                if (a.rawDateObject && b.rawDateObject) return new Date(a.rawDateObject) - new Date(b.rawDateObject);
-                return a.displayTime.localeCompare(b.displayTime);
-            });
-
-            if (matchingDayGames.length === 0) {
-                listEl.innerHTML = `<div class="text-xs text-slate-500 text-center py-6 font-medium">${txt.noFixtures}</div>`;
-                document.getElementById("group-feed-modal").classList.remove("hidden");
-                return;
-            }
-
-            // 3. Render all 4 to 6 match blocks inside the single pop-up list view side-by-side
-            matchingDayGames.forEach(m => {
-                const row = document.createElement("div");
-                row.className = "p-4 border border-slate-700/60 bg-slate-900 rounded-xl space-y-3 shadow-sm mb-2";
-                const dist = m.betDistribution || { home: 40, draw: 30, away: 30 };
-
-                row.innerHTML = `
-                    <div class="text-[9px] uppercase tracking-wider font-extrabold text-slate-500 font-mono flex justify-between border-b border-slate-950 pb-1">
-                        <span>${m.groupContext} • ${m.stageName}</span>
-                    </div>
-                    <div class="flex justify-between items-center font-black text-sm text-slate-100">
-                        <span class="truncate w-[160px] text-left flex items-center gap-1.5">
-                            <i class="fa-solid fa-square text-[8px] text-amber-500"></i> ${translateTeam(m.home)}
-                        </span>
-                        <div class="flex flex-col items-center min-w-[100px] bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800">
-                            <span class="text-amber-400 font-mono text-sm tracking-wider font-black">${m.score}</span>
-                            <span class="text-[9px] text-slate-400 font-mono mt-0.5 uppercase font-medium tracking-wide">${m.displayTime.split('•')[0]}</span>
-                        </div>
-                        <span class="truncate w-[160px] text-right flex items-center justify-end gap-1.5">
-                            ${translateTeam(m.away)} <i class="fa-solid fa-square text-[8px] text-emerald-400"></i>
-                        </span>
-                    </div>
-                    
-                    <div class="space-y-1.5 pt-1 border-t border-slate-800/40">
-                        <div class="w-full bg-slate-800 rounded-full h-1.5 flex overflow-hidden">
-                            <div class="bg-amber-400" style="width: ${dist.home}%"></div>
-                            <div class="bg-slate-500" style="width: ${dist.draw}%"></div>
-                            <div class="bg-emerald-400" style="width: ${dist.away}%"></div>
-                        </div>
-                    </div>
-                `;
-                listEl.appendChild(row);
-            });
-
-            // 4. Fire the pop-up open open animation sequence
-            document.getElementById("group-feed-modal").classList.remove("hidden");
-        }
 
         window.onclick = function(event) { 
             if (event.target === document.getElementById("team-modal")) closeTeamModal(); 
