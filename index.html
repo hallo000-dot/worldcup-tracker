@@ -39,6 +39,10 @@
                 <button onclick="fetchLiveTournamentData()" class="bg-slate-700 hover:bg-slate-600 text-xs font-bold px-3 py-1.5 rounded-md border border-slate-600 cursor-pointer">
                     <i class="fa-solid fa-arrows-spin"></i> Sync Now
                 </button>
+
+                <button onclick="openFaqModal()" class="bg-slate-700 hover:bg-slate-600 text-xs font-bold px-3 py-1.5 rounded-md border border-slate-600 cursor-pointer">
+                    <i class="fa-solid fa-circle-question mr-1"></i> <span id="lbl-btn-faq">Explanatory FAQ</span>
+                </button>
             </div>
         </div>
     </header>
@@ -179,6 +183,56 @@
         </div>
     </div>
 
+    <div id="faq-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-question text-amber-400"></i>
+                    <h3 id="faq-modal-title" class="text-base font-black text-slate-100 uppercase tracking-wider">System Methodology FAQ</h3>
+                </div>
+                <button onclick="closeFaqModal()" class="text-slate-400 hover:text-slate-100 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-sm leading-relaxed text-slate-300">
+                
+                <div class="space-y-1">
+                    <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-brain mr-1"></i> 1. Live Diagnosis (AI Commentary)</h4>
+                    <p class="text-xs text-slate-300">
+                        When clicking a team, your browser runs a dynamic contextual packaging query. It securely binds the team's real-time Points ($PTS$), Matches Played ($P$), and Goal Difference ($GD$) directly into a secure payload transmitted to the <strong>Gemini 2.5 Flash Engine</strong>. The AI behaves like a veteran sports quant, returning a completely unique tactical projection for that country's specific qualification vector.
+                    </p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-emerald-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-chart-line mr-1"></i> 2. Predictive Odds (1st / 2nd Place)</h4>
+                    <p class="text-xs text-slate-300">
+                        The percentages displayed in your main matrix grids utilize an active <strong>Dynamic Performance Matrix Tracker</strong>. Rather than showing rigid historic baselines, our native mathematical engine calculates an ongoing momentum score based on current goal margins and matches remaining, reflecting true up-to-the-minute qualification projections.
+                    </p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-indigo-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-chart-pie mr-1"></i> 3. Public Retail Exchange Bet Volume</h4>
+                    <p class="text-xs text-slate-300">
+                        This section utilizes a data fusion network. Every 60 seconds, the site parses international sports exchanges via <strong>The Odds API</strong>. It pulls active moneyline prices, strips away the house overround margin mathematically, and processes the remaining value into a clean $100\%$ global volume handle. If network caps occur, an internal deterministic fallback engine takes over to guarantee fluid UI operations.
+                    </p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-teal-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-satellite mr-1"></i> 4. Data Refresh Rate & High Accuracy</h4>
+                    <p class="text-xs text-slate-300">
+                        To maintain elite tracking fidelity, the platform runs a <strong>60-second background background daemon loop</strong>. It acts as a dual-stream hub connecting live match outcomes directly with active public sentiment feeds. This keeps scheduling, scores, brackets, and analytical summaries running completely in sync without requiring manual page refreshes.
+                    </p>
+                </div>
+
+            </div>
+            
+            <div class="bg-slate-900/60 px-6 py-3 border-t border-slate-700/60 flex justify-end">
+                <button onclick="closeFaqModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-4 py-2 rounded-lg border border-slate-600 cursor-pointer transition-colors">
+                    Close FAQ
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentLang = "en";
         let apiDataStorage = {};
@@ -240,11 +294,23 @@
                 tvTitle: "全球直播觀賽指南 (PDT)", noFixtures: "此日期內目前沒有查找到任何賽事對陣。",
                 tabGroup: "小組賽數據矩陣面板", tabKnockout: "32強淘汰賽動態樹狀中心",
                 koHeading: "全自動決賽淘汰賽對陣樹", koMessage: "常規分組循環賽已隱藏。追蹤鎖定進入32強後決賽圈國家的生存和對陣形勢。"
+                // Add these strings into your "en:" object block:
+                faqTitle: "System Methodology FAQ",
+                // Add these strings into your "zh:" object block:
+                faqTitle: "系統核心演算與數據架構說明 (FAQ)",
             }
         };
 
         function translateTeam(name) {
             return (currentLang === "zh" && teamTranslations[name]) ? teamTranslations[name] : name;
+        }
+
+        // 📄 EXPLANATORY FAQ MODAL INTERACTIVE WINDOW CONTROLS
+        function openFaqModal() { 
+            document.getElementById("faq-modal").classList.remove("hidden"); 
+        }
+        function closeFaqModal() { 
+            document.getElementById("faq-modal").classList.add("hidden"); 
         }
 
         function switchTournamentPhase(phase) {
@@ -320,6 +386,7 @@
             if (document.getElementById("lbl-tab-knockout")) document.getElementById("lbl-tab-knockout").textContent = txt.tabKnockout;
             if (document.getElementById("knockout-heading")) document.getElementById("knockout-heading").textContent = txt.koHeading;
             if (document.getElementById("knockout-message")) document.getElementById("knockout-message").textContent = txt.koMessage;
+            if (document.getElementById("faq-modal-title")) document.getElementById("faq-modal-title").textContent = txt.faqTitle;
 
             const tvTitleEl = document.getElementById("tv-guide-title");
             if (tvTitleEl) tvTitleEl.innerHTML = `<i class="fa-solid fa-tv"></i> ${txt.tvTitle}`;
@@ -1036,6 +1103,7 @@
         window.onclick = function(event) { 
             if (event.target === document.getElementById("team-modal")) closeTeamModal(); 
             if (event.target === document.getElementById("group-feed-modal")) closeGroupFeedModal();
+            if (event.target === document.getElementById("faq-modal")) closeFaqModal(); // 🚀 Wire up FAQ layer
         }
 
         document.addEventListener("DOMContentLoaded", () => {
