@@ -264,17 +264,26 @@
             const modalEl = document.getElementById("team-modal");
             const headerTitleEl = document.getElementById("modal-header-title");
             if (modalEl && !modalEl.classList.contains("hidden") && headerTitleEl) {
-                // Safely grab the raw English name out of the active data model
-                const currentOpenTeam = headerTitleEl.textContent;
-                // Find which group this team belongs to in your active memory state
+                const screenText = headerTitleEl.textContent;
+                
+                // Reverse search the translation dictionary to find the original English key name
+                let englishTeamName = screenText; 
+                Object.keys(teamTranslations).forEach(engKey => {
+                    if (teamTranslations[engKey] === screenText) {
+                        englishTeamName = engKey;
+                    }
+                });
+
+                // Find which group this team belongs to in active memory state
                 let foundGroup = activeGroup;
                 Object.keys(globalTournamentData).forEach(g => {
-                    if (globalTournamentData[g].standings.some(t => t.name === currentOpenTeam || translateTeam(t.name) === currentOpenTeam)) {
+                    if (globalTournamentData[g].standings.some(t => t.name === englishTeamName)) {
                         foundGroup = g;
                     }
                 });
-                // Re-call the function to pull a live translated AI response seamlessly
-                openTeamModal(currentOpenTeam, foundGroup);
+
+                // Re-call the modal fetch with the verified English key string
+                openTeamModal(englishTeamName, foundGroup);
             }
         }
 
