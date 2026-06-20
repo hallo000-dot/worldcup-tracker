@@ -186,13 +186,19 @@
 
         const teamTranslations = {
             "Mexico": "墨西哥", "South Korea": "南韓", "Czechia": "捷克", "South Africa": "南非",
-            "Canada": "加拿大", "Switzerland": "瑞士", "Bosnia & Herz.": "波士尼亞", "Qatar": "卡達",
-            "Brazil": "巴西", "Morocco": "摩洛哥", "Scotland": "蘇格蘭", "Haiti": "海地",
-            "United States": "美國", "Australia": "澳洲", "Türkiye": "土耳其", "Paraguay": "巴拉圭",
+            "Canada": "加拿大", "Switzerland": "瑞士", 
+            "Bosnia-Herzegovina": "波士尼亞", // 🌟 Catches hyphenated API data
+            "Bosnia & Herz.": "波士尼亞",
+            "Turkey": "土耳其",              // 🌟 Catches "Turkey" fallback
+            "Türkiye": "土耳其", 
+            "Qatar": "卡達", "Brazil": "巴西", "Morocco": "摩洛哥", "Scotland": "蘇格蘭", "Haiti": "海地",
+            "United States": "美國", "Australia": "澳洲", "Paraguay": "巴拉圭",
             "Germany": "德國", "Ecuador": "厄瓜多", "Ivory Coast": "科特迪瓦", "Curaçao": "庫拉索",
             "Netherlands": "荷蘭", "Japan": "日本", "Sweden": "瑞典", "Tunisia": "突尼西亞",
             "Belgium": "比利時", "Egypt": "埃及", "Iran": "伊朗", "New Zealand": "紐西蘭",
-            "Spain": "西班牙", "Uruguay": "烏拉圭", "Saudi Arabia": "沙烏地阿拉伯", "Cape Verde": "佛得角",
+            "Spain": "西班牙", "Uruguay": "烏拉圭", "Saudi Arabia": "沙烏地阿拉伯", 
+            "Cape Verde Islands": "佛得角",   // 🌟 Catches full island string
+            "Cape Verde": "佛得角",
             "France": "法國", "Norway": "挪威", "Senegal": "塞內加爾", "Iraq": "伊拉克",
             "Argentina": "阿根廷", "Austria": "奧地利", "Algeria": "阿爾及利亞", "Jordan": "約旦",
             "Colombia": "哥倫比亞", "Portugal": "葡萄牙", "Uzbekistan": "烏茲別克", "Congo DR": "剛果民主共和國",
@@ -782,14 +788,14 @@
                     }
 
                     tableRows += `
-                        <tr class="hover:bg-slate-700/60 transition-colors border-b border-slate-700/20 last:border-0 font-medium" onclick="event.stopPropagation(); openTeamModal('${team.name}', '${groupName}')">
-                            <td class="py-2 px-1 text-slate-400 font-bold text-center text-xs">${idx + 1}</td>
-                            <td class="py-2 px-1 font-bold text-slate-200 text-xs truncate max-w-[95px]">${translateTeam(team.name)}</td>
-                            <td class="py-2 px-1 text-center text-xs font-mono text-slate-400">${team.p}</td>
-                            <td class="py-2 px-1 text-center text-xs font-mono text-amber-400 font-bold">${Math.max(3 - team.p, 0)}</td>
-                            <td class="py-2 px-1 text-center text-xs font-mono text-slate-100 font-bold">${team.pts}</td>
-                            <td class="py-2 px-1 text-center text-xs font-mono ${gd >= 0 ? 'text-emerald-400':'text-rose-400'}">${gd > 0 ? '+'+gd : gd}</td>
-                            <td class="py-2 px-1 text-right text-[11px] font-mono font-black text-amber-400">${Math.round(probFirst)}%<span class="text-slate-600 font-normal">/</span><span class="text-emerald-400">${Math.round(probSecond)}%</span></td>
+                        <tr class="hover:bg-slate-700/60 transition-colors border-b border-slate-700/20 last:border-0 font-bold text-sm" onclick="event.stopPropagation(); openTeamModal('${team.name}', '${groupName}')">
+                            <td class="py-3 px-1 text-slate-400 text-center">${idx + 1}</td>
+                            <td class="py-3 px-1 text-slate-100 truncate max-w-[110px]">${translateTeam(team.name)}</td>
+                            <td class="py-3 px-1 text-center font-mono text-slate-400">${team.p}</td>
+                            <td class="py-3 px-1 text-center font-mono text-amber-400">${Math.max(3 - team.p, 0)}</td>
+                            <td class="py-3 px-1 text-center font-mono text-slate-100">${team.pts}</td>
+                            <td class="py-3 px-1 text-center font-mono ${gd >= 0 ? 'text-emerald-400':'text-rose-400'}">${gd > 0 ? '+'+gd : gd}</td>
+                            <td class="py-3 px-1 text-right font-mono text-xs text-amber-400">${Math.round(probFirst)}%<span class="text-slate-600 font-normal">/</span><span class="text-emerald-400">${Math.round(probSecond)}%</span></td>
                         </tr>
                     `;
                 });
