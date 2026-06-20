@@ -178,9 +178,12 @@
         // 🔑 THE ODDS API REAL-TIME PROBABILITY CONSENSUS INTEGRATION
         const THE_ODDS_API_KEY = "bbc112645c0e2a458996e3fed8af288c"; // <-- Put your free registration key here
 
-        // 🧠 GOOGLE AI STUDIO: FREE LIVE REASONING ENGINE 
-        const GEMINI_API_KEY = "AQ.Ab8RN6IcS2OOQQlZEd9d18R1gHiiFCYNZZXERAEs3ZHNWLnGOQ"; // <-- Put your Gemini key here!
-
+        // 🧠 GOOGLE AI STUDIO: SECURE LIVE REASONING ENGINE (NO GITHUB LEAKS)
+        const GEMINI_API_KEY = sessionStorage.getItem("gemini_key") || prompt("Please enter your Gemini API Key:");
+        if (GEMINI_API_KEY) {
+            sessionStorage.setItem("gemini_key", GEMINI_API_KEY);
+        }
+        
         const teamTranslations = {
             "Mexico": "墨西哥", "South Korea": "南韓", "Czechia": "捷克", "South Africa": "南非",
             "Canada": "加拿大", "Switzerland": "瑞士", "Bosnia & Herz.": "波士尼亞", "Qatar": "卡達",
