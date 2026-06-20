@@ -925,61 +925,6 @@
             if (event.target === document.getElementById("group-feed-modal")) closeGroupFeedModal();
         }
 
-        // 🚀 NEW: Opens the Live Feed Pop-up focused strictly on the selected card matchup
-        function openSingleMatchModal(homeTeam, awayTeam, groupName) {
-            if (!globalTournamentData[groupName]) return;
-            
-            const listEl = document.getElementById("matches-list");
-            const badgeEl = document.getElementById("group-active-badge");
-            if (!listEl || !badgeEl) return;
-            
-            // 1. Sync the header badge to display the context
-            badgeEl.textContent = `${groupName} • Selected Match`;
-            listEl.innerHTML = "";
-            
-            // 2. Find the single match entry inside that group pool
-            const targetMatch = globalTournamentData[groupName].matches.find(m => m.home === homeTeam && m.away === awayTeam);
-            
-            if (targetMatch) {
-                const row = document.createElement("div");
-                row.className = "p-4 border border-slate-700/80 bg-slate-900 rounded-xl space-y-3 shadow-md";
-                const dist = targetMatch.betDistribution || { home: 40, draw: 30, away: 30 };
-                const txt = i18n[currentLang] || i18n["en"];
-
-                row.innerHTML = `
-                    <div class="flex justify-between items-center font-black text-sm text-slate-100">
-                        <span class="truncate w-[160px] text-left flex items-center gap-1.5">
-                            <i class="fa-solid fa-square text-[8px] text-amber-500"></i> ${translateTeam(targetMatch.home)}
-                        </span>
-                        <div class="flex flex-col items-center min-w-[100px] bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800">
-                            <span class="text-amber-400 font-mono text-sm tracking-wider font-black">${targetMatch.score}</span>
-                            <span class="text-[9px] text-slate-400 font-mono mt-0.5 uppercase font-medium tracking-wide">${targetMatch.displayTime}</span>
-                        </div>
-                        <span class="truncate w-[160px] text-right flex items-center justify-end gap-1.5">
-                            ${translateTeam(targetMatch.away)} <i class="fa-solid fa-square text-[8px] text-emerald-400"></i>
-                        </span>
-                    </div>
-                    
-                    <div class="space-y-1.5 pt-1 border-t border-slate-800/40">
-                        <div class="w-full bg-slate-800 rounded-full h-2 flex overflow-hidden shadow-inner">
-                            <div class="bg-gradient-to-r from-amber-500 to-amber-400 h-full transition-all" style="width: ${dist.home}%"></div>
-                            <div class="bg-slate-500 h-full transition-all" style="width: ${dist.draw}%"></div>
-                            <div class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full transition-all" style="width: ${dist.away}%"></div>
-                        </div>
-                        <div class="flex justify-between text-[9px] font-mono font-bold text-slate-400 px-1">
-                            <span class="text-amber-400">Home Vol: ${dist.home}%</span>
-                            <span class="text-slate-400">Draw Vol: ${dist.draw}%</span>
-                            <span class="text-emerald-400">Away Vol: ${dist.away}%</span>
-                        </div>
-                    </div>
-                `;
-                listEl.appendChild(row);
-            }
-            
-            // 3. Fire open the window overlay
-            document.getElementById("group-feed-modal").classList.remove("hidden");
-        }
-
         document.addEventListener("DOMContentLoaded", () => {
             updateStaticTexts();
             fetchLiveTournamentData();
