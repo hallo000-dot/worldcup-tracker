@@ -188,46 +188,70 @@
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-circle-question text-amber-400"></i>
-                    <h3 id="faq-modal-title" class="text-base font-black text-slate-100 uppercase tracking-wider">System Methodology FAQ</h3>
+                    <h3 class="text-base font-black text-slate-100 uppercase tracking-wider lang-en">System Methodology FAQ</h3>
+                    <h3 class="text-base font-black text-slate-100 uppercase tracking-wider lang-zh hidden">系統核心演算法與架構說明 (FAQ)</h3>
                 </div>
                 <button onclick="closeFaqModal()" class="text-slate-400 hover:text-slate-100 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-sm leading-relaxed text-slate-300">
-                
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-sm leading-relaxed text-slate-300 lang-en">
                 <div class="space-y-1">
                     <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-brain mr-1"></i> 1. Live Diagnosis (AI Commentary)</h4>
                     <p class="text-xs text-slate-300">
                         When clicking a team, your browser runs a dynamic contextual packaging query. It securely binds the team's real-time Points ($PTS$), Matches Played ($P$), and Goal Difference ($GD$) directly into a secure payload transmitted to the <strong>Gemini 2.5 Flash Engine</strong>. The AI behaves like a veteran sports quant, returning a completely unique tactical projection for that country's specific qualification vector.
                     </p>
                 </div>
-
                 <div class="space-y-1">
                     <h4 class="font-bold text-emerald-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-chart-line mr-1"></i> 2. Predictive Odds (1st / 2nd Place)</h4>
                     <p class="text-xs text-slate-300">
                         The percentages displayed in your main matrix grids utilize an active <strong>Dynamic Performance Matrix Tracker</strong>. Rather than showing rigid historic baselines, our native mathematical engine calculates an ongoing momentum score based on current goal margins and matches remaining, reflecting true up-to-the-minute qualification projections.
                     </p>
                 </div>
-
                 <div class="space-y-1">
                     <h4 class="font-bold text-indigo-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-chart-pie mr-1"></i> 3. Public Retail Exchange Bet Volume</h4>
                     <p class="text-xs text-slate-300">
                         This section utilizes a data fusion network. Every 60 seconds, the site parses international sports exchanges via <strong>The Odds API</strong>. It pulls active moneyline prices, strips away the house overround margin mathematically, and processes the remaining value into a clean $100\%$ global volume handle. If network caps occur, an internal deterministic fallback engine takes over to guarantee fluid UI operations.
                     </p>
                 </div>
-
                 <div class="space-y-1">
                     <h4 class="font-bold text-teal-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-satellite mr-1"></i> 4. Data Refresh Rate & High Accuracy</h4>
                     <p class="text-xs text-slate-300">
                         To maintain elite tracking fidelity, the platform runs a <strong>60-second background background daemon loop</strong>. It acts as a dual-stream hub connecting live match outcomes directly with active public sentiment feeds. This keeps scheduling, scores, brackets, and analytical summaries running completely in sync without requiring manual page refreshes.
                     </p>
                 </div>
+            </div>
 
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-sm leading-relaxed text-slate-300 lang-zh hidden">
+                <div class="space-y-1">
+                    <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-brain mr-1"></i> 1. 數據模型預測診斷分析 (AI 評論)</h4>
+                    <p class="text-xs text-slate-300">
+                        當您點擊任何球隊時，系統會立即包裝該球隊的即時數據，包括積分 ($PTS$)、已賽場次 ($P$) 及淨勝球 ($GD$)，並將這些上下文數據安全傳送至 <strong>Gemini 2.5 Flash 引擎</strong>。AI 將化身為資深體育量化分析師，針對該國的晉級形勢，即時生成獨一無二的戰術與策略評估報告。
+                    </p>
+                </div>
+                <div class="space-y-1">
+                    <h4 class="font-bold text-emerald-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-chart-line mr-1"></i> 2. 晉級小組第 1 / 第 2 名概率</h4>
+                    <p class="text-xs text-slate-300">
+                        主矩陣表格中顯示的百分比均採用系統內建的<strong>動態表現矩陣追蹤演算法</strong>。這套原生數學模型會根據球隊目前的淨勝球、積分形勢以及剩餘比賽的潛在權重，即時更新其最終出線的概率模型，而非顯示僵化的歷史靜態數據。
+                    </p>
+                </div>
+                <div class="space-y-1">
+                    <h4 class="font-bold text-indigo-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-chart-pie mr-1"></i> 3. 全球交易所即時大眾投注份額</h4>
+                    <p class="text-xs text-slate-300">
+                        此區塊採用數據融合網路技術。系統每 60 秒會透過 <strong>The Odds API</strong> 抓取全球主流零售博彩公司與交易所的即時獨贏盤口。核心引擎會自動扣除莊家的抽水利潤（Overround Margin），並將純粹的市場資金流轉化為 $100\%$ 的清晰投注占比圖。若外部 API 觸發頻率限制，系統將無縫切換至內部的確定性邏輯引擎，以確保介面維持完美渲染。
+                    </p>
+                </div>
+                <div class="space-y-1">
+                    <h4 class="font-bold text-teal-400 text-xs uppercase tracking-wider"><i class="fa-solid fa-satellite mr-1"></i> 4. 數據即時同步與高準確度保障</h4>
+                    <p class="text-xs text-slate-300">
+                        為確保數據與大賽局勢達到極致的同步率，本平台內建了 <strong>60 秒自動背景常駐程式循環（Background Daemon Loop）</strong>。它扮演著雙流同步中樞的角色，將最新的賽事賽果與國際大眾情緒即時對接，讓時間、比分、淘汰賽樹狀圖及 AI 診斷始終保持最新狀態，免去手動重新整理頁面的繁瑣。
+                    </p>
+                </div>
             </div>
             
             <div class="bg-slate-900/60 px-6 py-3 border-t border-slate-700/60 flex justify-end">
                 <button onclick="closeFaqModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-4 py-2 rounded-lg border border-slate-600 cursor-pointer transition-colors">
-                    Close FAQ
+                    <span class="lang-en">Close FAQ</span>
+                    <span class="lang-zh hidden">關閉窗口</span>
                 </button>
             </div>
         </div>
@@ -342,6 +366,14 @@
             buildDynamicDropdownMenu(); // 2. Translates the calendar dates dropdown
             calculateStandingsNatively(); // 3. Re-runs the standings tables instantly
             filterMasterTvGuide();        // 4. Forces the Global Watch Guide to translate instantly!
+
+            if (lang === "zh") {
+                document.querySelectorAll('.lang-en').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.lang-zh').forEach(el => el.classList.remove('hidden'));
+            } else {
+                document.querySelectorAll('.lang-zh').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.lang-en').forEach(el => el.classList.remove('hidden'));
+            }
             
             // 5. If the user has a team modal open, automatically re-trigger it in the new language!
             const modalEl = document.getElementById("team-modal");
