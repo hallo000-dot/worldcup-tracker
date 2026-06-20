@@ -183,7 +183,7 @@
         if (GEMINI_API_KEY) {
             sessionStorage.setItem("gemini_key", GEMINI_API_KEY);
         }
-        
+
         const teamTranslations = {
             "Mexico": "墨西哥", "South Korea": "南韓", "Czechia": "捷克", "South Africa": "南非",
             "Canada": "加拿大", "Switzerland": "瑞士", "Bosnia & Herz.": "波士尼亞", "Qatar": "卡達",
@@ -255,9 +255,27 @@
 
         function changeLanguage(lang) {
             currentLang = lang;
-            updateStaticTexts();
-            buildDynamicDropdownMenu();
-            renderDashboard();
+            updateStaticTexts();       // 1. Flips all the hardcoded headers/labels
+            buildDynamicDropdownMenu(); // 2. Translates the calendar dates dropdown
+            calculateStandingsNatively(); // 3. Re-runs the standings tables instantly
+            filterMasterTvGuide();        // 4. Forces the Global Watch Guide to translate instantly!
+            
+            // 5. If the user has a team modal open, automatically re-trigger it in the new language!
+            const modalEl = document.getElementById("team-modal");
+            const headerTitleEl = document.getElementById("modal-header-title");
+            if (modalEl && !modalEl.classList.contains("hidden") && headerTitleEl) {
+                // Safely grab the raw English name out of the active data model
+                const currentOpenTeam = headerTitleEl.textContent;
+                // Find which group this team belongs to in your active memory state
+                let foundGroup = activeGroup;
+                Object.keys(globalTournamentData).forEach(g => {
+                    if (globalTournamentData[g].standings.some(t => t.name === currentOpenTeam || translateTeam(t.name) === currentOpenTeam)) {
+                        foundGroup = g;
+                    }
+                });
+                // Re-call the function to pull a live translated AI response seamlessly
+                openTeamModal(currentOpenTeam, foundGroup);
+            }
         }
 
         function updateStaticTexts() {
