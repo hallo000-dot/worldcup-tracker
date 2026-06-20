@@ -25,6 +25,17 @@
                     <option value="en">🇺🇸 EN</option>
                     <option value="zh">🇭🇰 繁中</option>
                 </select>
+
+                <div class="flex items-center bg-slate-700 border border-slate-600 rounded-md p-0.5 space-x-0.5">
+                    <button onclick="adjustFontSize('decrease')" class="text-slate-300 hover:text-slate-100 px-2 py-1 text-xs font-bold cursor-pointer transition-colors" title="Decrease Font">
+                        <i class="fa-solid fa-minus text-[10px]"></i>
+                    </button>
+                    <span id="font-size-indicator" class="text-[10px] font-mono font-black px-1 text-amber-400 select-none">100%</span>
+                    <button onclick="adjustFontSize('increase')" class="text-slate-300 hover:text-slate-100 px-2 py-1 text-xs font-bold cursor-pointer transition-colors" title="Increase Font">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                    </button>
+                </div>
+
                 <button onclick="fetchLiveTournamentData()" class="bg-slate-700 hover:bg-slate-600 text-xs font-bold px-3 py-1.5 rounded-md border border-slate-600 cursor-pointer">
                     <i class="fa-solid fa-arrows-spin"></i> Sync Now
                 </button>
@@ -1001,6 +1012,26 @@
         }
 
         function closeTeamModal() { document.getElementById("team-modal").classList.add("hidden"); }
+
+        // 🔎 GLOBAL RE-SCALING FONT ENGINE
+        let globalFontScalePercentage = 100;
+        
+        function adjustFontSize(direction) {
+            if (direction === 'increase' && globalFontScalePercentage < 130) {
+                globalFontScalePercentage += 10;
+            } else if (direction === 'decrease' && globalFontScalePercentage > 80) {
+                globalFontScalePercentage -= 10;
+            }
+            
+            // Apply the scaling factor directly to the document root element
+            document.documentElement.style.fontSize = `${globalFontScalePercentage}%`;
+            
+            // Update the UI control display label
+            const indicator = document.getElementById("font-size-indicator");
+            if (indicator) {
+                indicator.textContent = `${globalFontScalePercentage}%`;
+            }
+        }
 
         window.onclick = function(event) { 
             if (event.target === document.getElementById("team-modal")) closeTeamModal(); 
