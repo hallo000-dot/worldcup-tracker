@@ -63,7 +63,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- 📲 GLOBAL WATCH GUIDE WRAPS UPWARD ON MOBILE PORTS SAFELY -->
+        <!-- GLOBAL WATCH GUIDE SECTION PANEL -->
         <div class="space-y-6 flex flex-col order-1 lg:order-2">
             <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl flex flex-col border-emerald-500/20">
                 <div class="border-b border-slate-700 pb-3 mb-3 space-y-2.5">
@@ -93,7 +93,7 @@
             </div>
         </div>
 
-        <!-- 📊 CORE GROUPS CONTAINER STAYS STABLE LAYER 1 -->
+        <!-- MATRIX STANDINGS TABLES GRID CONTAINER -->
         <div class="lg:col-span-2 space-y-4 order-2 lg:order-1">
             <div id="panel-group-stage" class="space-y-4">
                 <div>
@@ -132,7 +132,7 @@
         </div>
     </main>
 
-    <!-- TEAM PREDICTIVE DETAILS MODAL -->
+    <!-- TEAM OVERLAY DISPLAY SUMMARY MODAL -->
     <div id="team-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
@@ -149,7 +149,7 @@
                 
                 <div class="bg-slate-900 rounded-xl p-4 border border-slate-700 space-y-3">
                     <div id="modal-bet-title" class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
-                        <i class="fa-solid fa-chart-pie"></i> Public Retail Exchange Bet Volume
+                        <i class="fa-solid fa-chart-pie"></i> Public Retail Exchange Bet Volume Handle
                     </div>
                     <div id="modal-bet-shares-container" class="space-y-2"></div>
                 </div>
@@ -164,7 +164,7 @@
         </div>
     </div>
 
-    <!-- LIVE GROUP FIXTURES OVERLAY CENTER -->
+    <!-- MAIN ACTIVE LIVE GROUP ROUND TIMELINE MODAL OVERLAY -->
     <div id="group-feed-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
@@ -185,13 +185,13 @@
         </div>
     </div>
 
-    <!-- DOCUMENT METHODOLOGY FAQ OVERLAY -->
+    <!-- DOCUMENT CORE METHODOLOGY ARCHITECTURE FAQ MODAL -->
     <div id="faq-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-circle-question text-amber-400"></i>
-                    <h3 id="faq-modal-title" class="text-base font-black text-slate-100 uppercase tracking-wider lang-en">System Methodology FAQ</h3>
+                    <h3 class="text-base font-black text-slate-100 uppercase tracking-wider lang-en">System Methodology FAQ</h3>
                     <h3 id="faq-modal-title-zh" class="text-base font-black text-slate-100 uppercase tracking-wider lang-zh hidden">系統核心演算法與架構說明 (FAQ)</h3>
                 </div>
                 <button onclick="closeFaqModal()" class="text-slate-400 hover:text-slate-100 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
@@ -248,7 +248,7 @@
         </div>
     </div>
 	
-    <!-- DYNAMIC MATCH PREVIEW SPECIFIC MODAL -->
+    <!-- DYNAMIC INDIVIDUAL MATCH PREVIEW OVERLAY SPECIFIC MODAL -->
     <div id="match-preview-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-150">
             <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
@@ -259,10 +259,11 @@
             </div>
             
             <div class="p-6 space-y-4">
-                <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <div class="text-center w-[45%] font-black text-sm text-slate-100" id="preview-home-name"></div>
-                    <div class="text-center font-mono font-black text-xs text-amber-400 bg-slate-900 px-3 py-1 rounded" id="preview-match-score">VS</div>
-                    <div class="text-center w-[45%] font-black text-sm text-slate-100" id="preview-away-name"></div>
+                <!-- 🌟 ALIGNMENT CORRECTION: FLEX LAYOUT ENFORCED FOR SCORE BOARDS -->
+                <div class="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 w-full text-center gap-2">
+                    <div class="font-black text-sm text-slate-100 w-[40%] truncate px-1" id="preview-home-name"></div>
+                    <div class="font-mono font-black text-xs text-amber-400 bg-slate-900 px-3 py-1.5 rounded border border-slate-800 min-w-[70px] flex items-center justify-center shadow-inner" id="preview-match-score">VS</div>
+                    <div class="font-black text-sm text-slate-100 w-[40%] truncate text-right px-1" id="preview-away-name"></div>
                 </div>
 
                 <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 space-y-2">
@@ -532,7 +533,7 @@
                         score: computedScore,
                         status: match.status === "FINISHED" ? "FT" : match.status,
                         time: localDateKeyStr, 
-                        displayTime: computedScore === "vs" ? localizedDisplayTime : `${localizedDisplayTime} • ${match.status === "FINISHED" ? "Final" : "Live"}`,
+                        displayTime: localizedDisplayTime, // 🌟 FIXED: Keeps clean time string separate
                         betDistribution: { home: homeWeight, draw: drawWeight, away: awayWeight },
                         stageName: stageLabel,
                         rawDateObject: matchUtcDate 
@@ -546,13 +547,11 @@
                 if (syncStatusEl) syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Dual Streams Connected`;
                 buildDynamicDropdownMenu();
                 calculateStandingsNatively();
-                filterMasterTvGuide(); 
             } catch (error) {
                 generateSmartSimulatedStream();
                 if (syncStatusEl) syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Simulated Database`;
                 buildDynamicDropdownMenu();
                 calculateStandingsNatively();
-                filterMasterTvGuide();
             }
         }
 
@@ -601,7 +600,8 @@
                 }
             });
 
-            Array.from(detectedUniqueDatesSet).sort().forEach(dateKey => {
+            const sortedDatesArray = Array.from(detectedUniqueDatesSet).sort();
+            sortedDatesArray.forEach(dateKey => {
                 const opt = document.createElement("option");
                 opt.value = dateKey;
                 let displayLabel = new Date(dateKey + "T00:00:00").toLocaleDateString(currentLang === "zh" ? "zh-TW" : "en-US", { month: "long", day: "numeric", weekday: "short" });
@@ -609,7 +609,16 @@
                 opt.textContent = displayLabel;
                 filterSelect.appendChild(opt);
             });
-            filterSelect.value = currentSelectedValue;
+
+            // 🌟 FIXED: Today fallback default handler logic
+            if (currentSelectedValue === "all" || sortedDatesArray.includes(currentSelectedValue)) {
+                filterSelect.value = currentSelectedValue;
+            } else if (sortedDatesArray.includes(todayLocalKey)) {
+                filterSelect.value = todayLocalKey;
+            } else {
+                filterSelect.value = "all";
+            }
+            filterMasterTvGuide();
         }
 
         function filterMasterTvGuide() {
@@ -639,18 +648,19 @@
                 const cardItem = document.createElement("div");
                 cardItem.className = "bg-slate-900/90 border border-slate-800 p-3 rounded-lg flex flex-col justify-between shadow-md transition-all hover:border-amber-500/50 cursor-pointer";
                 
-                // Safely isolated object packaging parameters
                 cardItem.addEventListener("click", () => openMatchPreviewModal(m));
                 
-                const isLive = m.status === "IN_PLAY" || m.status === "PAUSED" || m.displayTime.includes("Live");
-                const isFinished = m.status === "FT" || m.status === "FINISHED" || m.displayTime.includes("Final");
+                const isLive = m.status === "IN_PLAY" || m.status === "PAUSED";
+                const isFinished = m.status === "FT" || m.status === "FINISHED";
                 let badgeStyle = isLive ? "bg-rose-500/10 text-rose-400 border-rose-500/20 animate-pulse font-black" : isFinished ? "bg-slate-950 text-slate-500 border-slate-900" : "bg-slate-800 text-slate-400 border-slate-700";
+                let statusText = isLive ? '🔴 LIVE' : isFinished ? '🏁 FT' : '⏳ UPCOMING';
 
+                // 🌟 FIXED: Clock icon and displayTime printed clearly below score rows
                 cardItem.innerHTML = `
                     <div class="text-[9px] uppercase tracking-wider font-extrabold font-mono flex justify-between items-center border-b border-slate-800 pb-1.5 mb-2">
                         <span class="text-slate-400">${m.groupContext} • ${m.stageName}</span>
                         <span class="px-1.5 py-0.5 rounded border text-[8px] ${badgeStyle}">
-                            ${isLive ? '🔴 LIVE' : isFinished ? '🏁 FT' : '⏳ UPCOMING'}
+                            ${statusText}
                         </span>
                     </div>
                     <div class="flex items-center justify-between gap-2">
@@ -666,8 +676,8 @@
                             <i class="fa-solid fa-square text-[6px] text-emerald-400"></i>
                         </div>
                     </div>
-                    <div class="text-[8px] font-mono font-medium text-slate-500 text-center mt-1.5 pt-1 border-t border-slate-950">
-                        <i class="fa-regular fa-clock text-[8px]"></i> ${m.displayTime}
+                    <div class="text-[9px] font-mono font-bold text-slate-400 text-center mt-1.5 pt-1 border-t border-slate-950/40 flex items-center justify-center gap-1">
+                        <i class="fa-regular fa-clock text-[9px] text-emerald-400"></i> ${m.displayTime}
                     </div>
                 `;
                 listEl.appendChild(cardItem);
@@ -706,7 +716,7 @@
                         <span class="truncate w-[160px] text-left flex items-center gap-1.5"><i class="fa-solid fa-square text-[8px] text-amber-500"></i> ${translateTeam(m.home)}</span>
                         <div class="flex flex-col items-center min-w-[100px] bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800">
                             <span class="text-amber-400 font-mono text-sm tracking-wider font-black">${m.score}</span>
-                            <span class="text-[9px] text-slate-400 font-mono mt-0.5 uppercase font-medium tracking-wide">${m.displayTime.split('•')[0]}</span>
+                            <span class="text-[9px] text-slate-400 font-mono mt-0.5 uppercase font-medium tracking-wide">${m.displayTime}</span>
                         </div>
                         <span class="truncate w-[160px] text-right flex items-center justify-end gap-1.5">${translateTeam(m.away)} <i class="fa-solid fa-square text-[8px] text-emerald-400"></i></span>
                     </div>
@@ -896,7 +906,7 @@
                     const wrapper = document.createElement("div");
                     wrapper.className = "bg-slate-950 p-3 rounded-lg border border-slate-800 text-[11px] space-y-2";
                     wrapper.innerHTML = `
-                        <div class="flex justify-between text-slate-400 font-bold text-[10px]"><span>vs ${translateTeam(opponent)}</span><span class="text-amber-500 font-mono">${m.displayTime.split('•')[0]}</span></div>
+                        <div class="flex justify-between text-slate-400 font-bold text-[10px]"><span>vs ${translateTeam(opponent)}</span><span class="text-amber-500 font-mono">${m.displayTime}</span></div>
                         <div class="w-full bg-slate-800 rounded-full h-1.5 flex overflow-hidden">
                             <div class="bg-amber-400" style="width: ${dist.home}%"></div>
                             <div class="bg-slate-500" style="width: ${dist.draw}%"></div>
