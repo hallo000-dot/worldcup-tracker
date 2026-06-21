@@ -610,14 +610,22 @@
                 filterSelect.appendChild(opt);
             });
 
-            // 🌟 FIXED: Today fallback default handler logic
-            if (currentSelectedValue === "all" || sortedDatesArray.includes(currentSelectedValue)) {
-                filterSelect.value = currentSelectedValue;
-            } else if (sortedDatesArray.includes(todayLocalKey)) {
-                filterSelect.value = todayLocalKey;
+            // 🌟 SMART MODE COCHRAN CROSS-CHECK:
+            // If the user hasn't chosen anything yet, try to show Today. 
+            // If Today has no matches, automatically default to the first available date with matches!
+            if (currentSelectedValue === "all" && filterSelect.value === "all") {
+                if (sortedDatesArray.includes(todayLocalKey)) {
+                    filterSelect.value = todayLocalKey;
+                } else if (sortedDatesArray.length > 0) {
+                    filterSelect.value = sortedDatesArray[0]; // Snaps to the earliest active match date (e.g. June 11)
+                } else {
+                    filterSelect.value = "all";
+                }
             } else {
-                filterSelect.value = "all";
+                // Keep the user's manual selection if they already clicked something
+                filterSelect.value = currentSelectedValue;
             }
+            
             filterMasterTvGuide();
         }
 
