@@ -666,10 +666,11 @@
                 
                 const isLive = m.status === "IN_PLAY" || m.status === "PAUSED";
                 const isFinished = m.status === "FT" || m.status === "FINISHED";
-                let badgeStyle = isLive ? "bg-rose-500/10 text-rose-400 border-rose-500/20 animate-pulse font-black" : isFinished ? "bg-slate-950 text-slate-500 border-slate-900" : "bg-slate-800 text-slate-400 border-slate-700";
+                
+                // 🌟 CHRONO BADGE DESIGN OPTIMIZATION
+                let badgeStyle = isLive ? "bg-rose-500/10 text-rose-400 border-rose-500/20 font-black animate-pulse" : isFinished ? "bg-slate-950 text-slate-500 border-slate-900" : "bg-slate-800 text-slate-400 border-slate-700";
                 let statusText = isLive ? '🔴 LIVE' : isFinished ? '🏁 FT' : '⏳ UPCOMING';
 
-                // 🌟 FIXED: Clock icon and displayTime printed clearly below score rows
                 cardItem.innerHTML = `
                     <div class="text-[9px] uppercase tracking-wider font-extrabold font-mono flex justify-between items-center border-b border-slate-800 pb-1.5 mb-2">
                         <span class="text-slate-400">${m.groupContext} • ${m.stageName}</span>
@@ -682,9 +683,14 @@
                             <i class="fa-solid fa-square text-[6px] text-amber-500"></i>
                             <span class="text-xs font-bold text-slate-100 truncate">${translateTeam(m.home)}</span>
                         </div>
-                        <div class="bg-slate-950 px-2 py-0.5 rounded border border-slate-800 text-[10px] font-mono font-black tracking-wider text-center min-w-[55px] text-amber-400">
-                            ${m.score === "vs" ? "VS" : m.score}
+                        
+                        <div class="relative flex flex-col items-center justify-center">
+                            <div class="bg-slate-950 px-2 py-0.5 rounded border ${isLive ? 'border-rose-500/40 text-rose-400':'border-slate-800 text-amber-400'} text-[10px] font-mono font-black tracking-wider text-center min-w-[55px]">
+                                ${m.score === "vs" ? "VS" : m.score}
+                            </div>
+                            ${isLive ? '<span class="text-[7px] text-rose-400 font-mono font-bold uppercase tracking-widest mt-0.5 animate-pulse">In Progress</span>' : ''}
                         </div>
+                        
                         <div class="flex items-center space-x-1.5 truncate w-[40%] justify-end">
                             <span class="text-xs font-bold text-slate-100 truncate text-right">${translateTeam(m.away)}</span>
                             <i class="fa-solid fa-square text-[6px] text-emerald-400"></i>
