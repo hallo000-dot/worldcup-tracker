@@ -533,7 +533,7 @@
                         score: computedScore,
                         status: match.status === "FINISHED" ? "FT" : match.status,
                         time: localDateKeyStr, 
-                        displayTime: localizedDisplayTime, // 🌟 FIXED: Keeps clean time string separate
+                        displayTime: localizedDisplayTime,
                         betDistribution: { home: homeWeight, draw: drawWeight, away: awayWeight },
                         stageName: stageLabel,
                         rawDateObject: matchUtcDate 
@@ -545,13 +545,19 @@
                 });
                 
                 if (syncStatusEl) syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Dual Streams Connected`;
+                
+                // 🌟 FORCE CHAIN RE-RENDER AT REFRESH STARTUP
                 buildDynamicDropdownMenu();
                 calculateStandingsNatively();
+                filterMasterTvGuide(); 
             } catch (error) {
                 generateSmartSimulatedStream();
                 if (syncStatusEl) syncStatusEl.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400 animate-pulse"></i> Simulated Database`;
+                
+                // 🌟 FORCE CHAIN RE-RENDER AT FALLBACK STARTUP
                 buildDynamicDropdownMenu();
                 calculateStandingsNatively();
+                filterMasterTvGuide();
             }
         }
 
